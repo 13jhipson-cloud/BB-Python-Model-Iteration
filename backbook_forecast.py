@@ -1192,7 +1192,9 @@ def calculate_impairment_actuals(fact_raw: pd.DataFrame) -> pd.DataFrame:
     """
     logger.info("Calculating impairment actuals...")
 
-    # Group by Segment, Cohort, CalendarMonth
+    # Group by Segment, Cohort, MOB (not CalendarMonth) to ensure correct coverage ratios per MOB
+    # This fixes the DonorCohort lookup issue where grouping by CalendarMonth with MOB=max
+    # would mix data from different MOBs within a cluster, producing incorrect rates
     agg_dict = {
         'Provision_Balance': 'sum',
         'ClosingGBV_Reported': 'sum',
@@ -1200,10 +1202,9 @@ def calculate_impairment_actuals(fact_raw: pd.DataFrame) -> pd.DataFrame:
         'Debt_Sale_Provision_Release': 'sum',
         'Debt_Sale_Proceeds': 'sum',
         'WO_Other': 'sum',
-        'MOB': 'max',
     }
 
-    impairment = fact_raw.groupby(['Segment', 'Cohort', 'CalendarMonth']).agg(agg_dict).reset_index()
+    impairment = fact_raw.groupby(['Segment', 'Cohort', 'MOB']).agg(agg_dict).reset_index()
 
     # Rename for clarity
     impairment.rename(columns={
@@ -1226,8 +1227,8 @@ def calculate_impairment_actuals(fact_raw: pd.DataFrame) -> pd.DataFrame:
         lambda r: safe_divide(abs(r['Debt_Sale_Proceeds']), abs(r['Debt_Sale_WriteOffs'])), axis=1
     )
 
-    # Sort and calculate provision movement
-    impairment = impairment.sort_values(['Segment', 'Cohort', 'CalendarMonth']).reset_index(drop=True)
+    # Sort by MOB and calculate provision movement
+    impairment = impairment.sort_values(['Segment', 'Cohort', 'MOB']).reset_index(drop=True)
 
     impairment['Prior_Provision_Balance'] = impairment.groupby(['Segment', 'Cohort'])['Total_Provision_Balance'].shift(1).fillna(0)
     impairment['Total_Provision_Movement'] = impairment['Total_Provision_Balance'] - impairment['Prior_Provision_Balance']
