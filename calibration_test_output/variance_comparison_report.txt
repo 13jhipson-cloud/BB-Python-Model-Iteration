@@ -1,0 +1,193 @@
+FORECAST vs BUDGET VARIANCE COMPARISON REPORT
+Generated: 2026-01-30 09:29
+================================================================================
+
+SUMMARY BY METRIC:
+  Collections: Budget=£119.91M, Forecast=£129.75M, Variance=£9.84M (8.2%)
+  ClosingGBV: Budget=£2034.54M, Forecast=£1836.50M, Variance=£-198.04M (-9.7%)
+  ClosingNBV: Budget=£1713.73M, Forecast=£1559.61M, Variance=£-154.11M (-9.0%)
+  Revenue: Budget=£44.01M, Forecast=£37.80M, Variance=£-6.20M (-14.1%)
+  NetImpairment: Budget=£-24.72M, Forecast=£-13.14M, Variance=£11.59M (46.9%)
+
+
+DETAILED BY SEGMENT AND MONTH:
+  ClosingGBV/Near Prime Medium/2025-11: Budget=£106.14M, Forecast=£104.70M, Variance=£-1.44M
+  ClosingGBV/Near Prime Medium/2025-12: Budget=£106.59M, Forecast=£100.66M, Variance=£-5.93M
+  ClosingGBV/Near Prime Medium/2026-01: Budget=£104.54M, Forecast=£97.46M, Variance=£-7.09M
+  ClosingGBV/Near Prime Medium/2026-02: Budget=£102.16M, Forecast=£94.28M, Variance=£-7.88M
+  ClosingGBV/Near Prime Medium/2026-03: Budget=£100.10M, Forecast=£90.43M, Variance=£-9.66M
+  ClosingGBV/Near Prime Medium/2026-04: Budget=£96.88M, Forecast=£87.52M, Variance=£-9.36M
+  ClosingGBV/Near Prime Medium/2026-05: Budget=£94.33M, Forecast=£84.67M, Variance=£-9.66M
+  ClosingGBV/Near Prime Medium/2026-06: Budget=£92.61M, Forecast=£80.99M, Variance=£-11.62M
+  ClosingGBV/Near Prime Medium/2026-07: Budget=£89.64M, Forecast=£78.40M, Variance=£-11.23M
+  ClosingGBV/Near Prime Small/2025-11: Budget=£38.84M, Forecast=£39.81M, Variance=£0.96M
+  ClosingGBV/Near Prime Small/2025-12: Budget=£37.95M, Forecast=£37.95M, Variance=£0.00M
+  ClosingGBV/Near Prime Small/2026-01: Budget=£37.03M, Forecast=£36.43M, Variance=£-0.60M
+  ClosingGBV/Near Prime Small/2026-02: Budget=£35.37M, Forecast=£34.96M, Variance=£-0.41M
+  ClosingGBV/Near Prime Small/2026-03: Budget=£33.80M, Forecast=£33.15M, Variance=£-0.65M
+  ClosingGBV/Near Prime Small/2026-04: Budget=£32.04M, Forecast=£31.83M, Variance=£-0.21M
+  ClosingGBV/Near Prime Small/2026-05: Budget=£30.51M, Forecast=£30.56M, Variance=£0.05M
+  ClosingGBV/Near Prime Small/2026-06: Budget=£29.28M, Forecast=£28.86M, Variance=£-0.42M
+  ClosingGBV/Near Prime Small/2026-07: Budget=£27.79M, Forecast=£27.73M, Variance=£-0.06M
+  ClosingGBV/Non Prime/2025-11: Budget=£106.78M, Forecast=£103.86M, Variance=£-2.91M
+  ClosingGBV/Non Prime/2025-12: Budget=£103.66M, Forecast=£95.87M, Variance=£-7.79M
+  ClosingGBV/Non Prime/2026-01: Budget=£99.41M, Forecast=£89.66M, Variance=£-9.75M
+  ClosingGBV/Non Prime/2026-02: Budget=£94.84M, Forecast=£83.71M, Variance=£-11.13M
+  ClosingGBV/Non Prime/2026-03: Budget=£90.06M, Forecast=£76.04M, Variance=£-14.01M
+  ClosingGBV/Non Prime/2026-04: Budget=£85.99M, Forecast=£70.86M, Variance=£-15.13M
+  ClosingGBV/Non Prime/2026-05: Budget=£81.95M, Forecast=£65.95M, Variance=£-16.00M
+  ClosingGBV/Non Prime/2026-06: Budget=£78.21M, Forecast=£59.05M, Variance=£-19.16M
+  ClosingGBV/Non Prime/2026-07: Budget=£74.76M, Forecast=£55.04M, Variance=£-19.72M
+  ClosingGBV/Prime/2025-11: Budget=£3.21M, Forecast=£2.90M, Variance=£-0.31M
+  ClosingGBV/Prime/2025-12: Budget=£3.09M, Forecast=£2.53M, Variance=£-0.56M
+  ClosingGBV/Prime/2026-01: Budget=£2.91M, Forecast=£2.22M, Variance=£-0.69M
+  ClosingGBV/Prime/2026-02: Budget=£2.74M, Forecast=£1.93M, Variance=£-0.81M
+  ClosingGBV/Prime/2026-03: Budget=£2.56M, Forecast=£1.68M, Variance=£-0.89M
+  ClosingGBV/Prime/2026-04: Budget=£2.41M, Forecast=£1.46M, Variance=£-0.95M
+  ClosingGBV/Prime/2026-05: Budget=£2.25M, Forecast=£1.27M, Variance=£-0.98M
+  ClosingGBV/Prime/2026-06: Budget=£2.11M, Forecast=£1.11M, Variance=£-1.01M
+  ClosingGBV/Prime/2026-07: Budget=£1.98M, Forecast=£0.96M, Variance=£-1.02M
+  ClosingNBV/Near Prime Medium/2025-11: Budget=£98.11M, Forecast=£99.36M, Variance=£1.24M
+  ClosingNBV/Near Prime Medium/2025-12: Budget=£96.62M, Forecast=£94.11M, Variance=£-2.51M
+  ClosingNBV/Near Prime Medium/2026-01: Budget=£92.84M, Forecast=£90.19M, Variance=£-2.65M
+  ClosingNBV/Near Prime Medium/2026-02: Budget=£90.90M, Forecast=£86.29M, Variance=£-4.62M
+  ClosingNBV/Near Prime Medium/2026-03: Budget=£87.10M, Forecast=£83.62M, Variance=£-3.48M
+  ClosingNBV/Near Prime Medium/2026-04: Budget=£84.04M, Forecast=£80.20M, Variance=£-3.84M
+  ClosingNBV/Near Prime Medium/2026-05: Budget=£81.59M, Forecast=£77.50M, Variance=£-4.09M
+  ClosingNBV/Near Prime Medium/2026-06: Budget=£78.16M, Forecast=£73.15M, Variance=£-5.02M
+  ClosingNBV/Near Prime Medium/2026-07: Budget=£75.33M, Forecast=£70.69M, Variance=£-4.63M
+  ClosingNBV/Near Prime Small/2025-11: Budget=£35.17M, Forecast=£35.79M, Variance=£0.63M
+  ClosingNBV/Near Prime Small/2025-12: Budget=£33.51M, Forecast=£34.17M, Variance=£0.66M
+  ClosingNBV/Near Prime Small/2026-01: Budget=£32.17M, Forecast=£32.39M, Variance=£0.23M
+  ClosingNBV/Near Prime Small/2026-02: Budget=£30.78M, Forecast=£30.73M, Variance=£-0.05M
+  ClosingNBV/Near Prime Small/2026-03: Budget=£28.80M, Forecast=£29.18M, Variance=£0.38M
+  ClosingNBV/Near Prime Small/2026-04: Budget=£27.17M, Forecast=£27.71M, Variance=£0.54M
+  ClosingNBV/Near Prime Small/2026-05: Budget=£25.76M, Forecast=£26.70M, Variance=£0.94M
+  ClosingNBV/Near Prime Small/2026-06: Budget=£24.15M, Forecast=£24.91M, Variance=£0.76M
+  ClosingNBV/Near Prime Small/2026-07: Budget=£22.76M, Forecast=£23.92M, Variance=£1.16M
+  ClosingNBV/Non Prime/2025-11: Budget=£89.93M, Forecast=£84.01M, Variance=£-5.92M
+  ClosingNBV/Non Prime/2025-12: Budget=£84.64M, Forecast=£78.25M, Variance=£-6.39M
+  ClosingNBV/Non Prime/2026-01: Budget=£80.96M, Forecast=£69.94M, Variance=£-11.02M
+  ClosingNBV/Non Prime/2026-02: Budget=£77.00M, Forecast=£63.72M, Variance=£-13.28M
+  ClosingNBV/Non Prime/2026-03: Budget=£70.94M, Forecast=£57.42M, Variance=£-13.52M
+  ClosingNBV/Non Prime/2026-04: Budget=£68.51M, Forecast=£50.51M, Variance=£-18.01M
+  ClosingNBV/Non Prime/2026-05: Budget=£64.90M, Forecast=£45.74M, Variance=£-19.16M
+  ClosingNBV/Non Prime/2026-06: Budget=£57.60M, Forecast=£38.60M, Variance=£-19.00M
+  ClosingNBV/Non Prime/2026-07: Budget=£56.44M, Forecast=£34.78M, Variance=£-21.66M
+  ClosingNBV/Prime/2025-11: Budget=£2.55M, Forecast=£2.90M, Variance=£0.34M
+  ClosingNBV/Prime/2025-12: Budget=£2.39M, Forecast=£2.53M, Variance=£0.15M
+  ClosingNBV/Prime/2026-01: Budget=£2.24M, Forecast=£2.22M, Variance=£-0.02M
+  ClosingNBV/Prime/2026-02: Budget=£2.10M, Forecast=£1.93M, Variance=£-0.17M
+  ClosingNBV/Prime/2026-03: Budget=£1.96M, Forecast=£1.67M, Variance=£-0.28M
+  ClosingNBV/Prime/2026-04: Budget=£1.83M, Forecast=£1.46M, Variance=£-0.37M
+  ClosingNBV/Prime/2026-05: Budget=£1.70M, Forecast=£1.27M, Variance=£-0.43M
+  ClosingNBV/Prime/2026-06: Budget=£1.59M, Forecast=£1.10M, Variance=£-0.48M
+  ClosingNBV/Prime/2026-07: Budget=£1.48M, Forecast=£0.96M, Variance=£-0.52M
+  Collections/Near Prime Medium/2025-11: Budget=£4.37M, Forecast=£5.14M, Variance=£0.77M
+  Collections/Near Prime Medium/2025-12: Budget=£4.25M, Forecast=£5.07M, Variance=£0.82M
+  Collections/Near Prime Medium/2026-01: Budget=£4.13M, Forecast=£4.73M, Variance=£0.60M
+  Collections/Near Prime Medium/2026-02: Budget=£3.88M, Forecast=£4.64M, Variance=£0.76M
+  Collections/Near Prime Medium/2026-03: Budget=£3.77M, Forecast=£4.52M, Variance=£0.75M
+  Collections/Near Prime Medium/2026-04: Budget=£3.66M, Forecast=£4.26M, Variance=£0.60M
+  Collections/Near Prime Medium/2026-05: Budget=£3.55M, Forecast=£4.16M, Variance=£0.61M
+  Collections/Near Prime Medium/2026-06: Budget=£3.44M, Forecast=£3.98M, Variance=£0.54M
+  Collections/Near Prime Medium/2026-07: Budget=£3.34M, Forecast=£3.80M, Variance=£0.45M
+  Collections/Near Prime Small/2025-11: Budget=£2.77M, Forecast=£2.33M, Variance=£-0.44M
+  Collections/Near Prime Small/2025-12: Budget=£2.62M, Forecast=£2.27M, Variance=£-0.35M
+  Collections/Near Prime Small/2026-01: Budget=£2.49M, Forecast=£2.18M, Variance=£-0.31M
+  Collections/Near Prime Small/2026-02: Budget=£2.29M, Forecast=£2.10M, Variance=£-0.19M
+  Collections/Near Prime Small/2026-03: Budget=£2.16M, Forecast=£1.99M, Variance=£-0.17M
+  Collections/Near Prime Small/2026-04: Budget=£2.04M, Forecast=£1.87M, Variance=£-0.16M
+  Collections/Near Prime Small/2026-05: Budget=£1.92M, Forecast=£1.81M, Variance=£-0.11M
+  Collections/Near Prime Small/2026-06: Budget=£1.81M, Forecast=£1.74M, Variance=£-0.08M
+  Collections/Near Prime Small/2026-07: Budget=£1.71M, Forecast=£1.63M, Variance=£-0.09M
+  Collections/Non Prime/2025-11: Budget=£8.82M, Forecast=£9.88M, Variance=£1.06M
+  Collections/Non Prime/2025-12: Budget=£8.39M, Forecast=£9.30M, Variance=£0.91M
+  Collections/Non Prime/2026-01: Budget=£7.84M, Forecast=£8.69M, Variance=£0.86M
+  Collections/Non Prime/2026-02: Budget=£7.45M, Forecast=£8.20M, Variance=£0.75M
+  Collections/Non Prime/2026-03: Budget=£7.04M, Forecast=£7.70M, Variance=£0.67M
+  Collections/Non Prime/2026-04: Budget=£6.65M, Forecast=£7.02M, Variance=£0.37M
+  Collections/Non Prime/2026-05: Budget=£6.29M, Forecast=£6.61M, Variance=£0.32M
+  Collections/Non Prime/2026-06: Budget=£5.95M, Forecast=£6.16M, Variance=£0.21M
+  Collections/Non Prime/2026-07: Budget=£5.63M, Forecast=£5.48M, Variance=£-0.15M
+  Collections/Prime/2025-11: Budget=£0.24M, Forecast=£0.40M, Variance=£0.17M
+  Collections/Prime/2025-12: Budget=£0.22M, Forecast=£0.39M, Variance=£0.17M
+  Collections/Prime/2026-01: Budget=£0.21M, Forecast=£0.34M, Variance=£0.13M
+  Collections/Prime/2026-02: Budget=£0.19M, Forecast=£0.31M, Variance=£0.12M
+  Collections/Prime/2026-03: Budget=£0.18M, Forecast=£0.27M, Variance=£0.09M
+  Collections/Prime/2026-04: Budget=£0.17M, Forecast=£0.23M, Variance=£0.06M
+  Collections/Prime/2026-05: Budget=£0.16M, Forecast=£0.20M, Variance=£0.04M
+  Collections/Prime/2026-06: Budget=£0.15M, Forecast=£0.18M, Variance=£0.03M
+  Collections/Prime/2026-07: Budget=£0.14M, Forecast=£0.15M, Variance=£0.01M
+  NetImpairment/Near Prime Medium/2025-11: Budget=£-0.80M, Forecast=£0.28M, Variance=£1.08M
+  NetImpairment/Near Prime Medium/2025-12: Budget=£-0.95M, Forecast=£-1.64M, Variance=£-0.69M
+  NetImpairment/Near Prime Medium/2026-01: Budget=£-1.06M, Forecast=£-0.72M, Variance=£0.34M
+  NetImpairment/Near Prime Medium/2026-02: Budget=£-0.94M, Forecast=£-0.73M, Variance=£0.21M
+  NetImpairment/Near Prime Medium/2026-03: Budget=£-0.78M, Forecast=£0.62M, Variance=£1.39M
+  NetImpairment/Near Prime Medium/2026-04: Budget=£-0.84M, Forecast=£-0.51M, Variance=£0.33M
+  NetImpairment/Near Prime Medium/2026-05: Budget=£-0.95M, Forecast=£0.16M, Variance=£1.11M
+  NetImpairment/Near Prime Medium/2026-06: Budget=£-0.80M, Forecast=£-1.41M, Variance=£-0.61M
+  NetImpairment/Near Prime Medium/2026-07: Budget=£-0.79M, Forecast=£0.13M, Variance=£0.92M
+  NetImpairment/Near Prime Small/2025-11: Budget=£-0.45M, Forecast=£-0.58M, Variance=£-0.13M
+  NetImpairment/Near Prime Small/2025-12: Budget=£-0.31M, Forecast=£0.01M, Variance=£0.32M
+  NetImpairment/Near Prime Small/2026-01: Budget=£-0.34M, Forecast=£-0.25M, Variance=£0.08M
+  NetImpairment/Near Prime Small/2026-02: Budget=£-0.28M, Forecast=£-0.19M, Variance=£0.09M
+  NetImpairment/Near Prime Small/2026-03: Budget=£-0.30M, Forecast=£-0.06M, Variance=£0.24M
+  NetImpairment/Near Prime Small/2026-04: Budget=£-0.18M, Forecast=£-0.15M, Variance=£0.03M
+  NetImpairment/Near Prime Small/2026-05: Budget=£-0.15M, Forecast=£0.26M, Variance=£0.41M
+  NetImpairment/Near Prime Small/2026-06: Budget=£-0.23M, Forecast=£-0.45M, Variance=£-0.23M
+  NetImpairment/Near Prime Small/2026-07: Budget=£-0.20M, Forecast=£0.15M, Variance=£0.35M
+  NetImpairment/Non Prime/2025-11: Budget=£-1.77M, Forecast=£-3.17M, Variance=£-1.40M
+  NetImpairment/Non Prime/2025-12: Budget=£-1.90M, Forecast=£1.11M, Variance=£3.01M
+  NetImpairment/Non Prime/2026-01: Budget=£-2.20M, Forecast=£-2.11M, Variance=£0.09M
+  NetImpairment/Non Prime/2026-02: Budget=£-1.71M, Forecast=£-0.28M, Variance=£1.44M
+  NetImpairment/Non Prime/2026-03: Budget=£-1.57M, Forecast=£-0.16M, Variance=£1.41M
+  NetImpairment/Non Prime/2026-04: Budget=£-1.45M, Forecast=£-1.73M, Variance=£-0.27M
+  NetImpairment/Non Prime/2026-05: Budget=£-1.37M, Forecast=£0.13M, Variance=£1.51M
+  NetImpairment/Non Prime/2026-06: Budget=£-1.23M, Forecast=£-2.03M, Variance=£-0.80M
+  NetImpairment/Non Prime/2026-07: Budget=£-1.17M, Forecast=£0.18M, Variance=£1.35M
+  NetImpairment/Prime/2025-11: Budget=£-0.00M, Forecast=£0.00M, Variance=£0.00M
+  NetImpairment/Prime/2025-12: Budget=£-0.00M, Forecast=£-0.00M, Variance=£-0.00M
+  NetImpairment/Prime/2026-01: Budget=£-0.00M, Forecast=£0.00M, Variance=£0.00M
+  NetImpairment/Prime/2026-02: Budget=£-0.00M, Forecast=£0.00M, Variance=£0.00M
+  NetImpairment/Prime/2026-03: Budget=£-0.00M, Forecast=£0.00M, Variance=£0.00M
+  NetImpairment/Prime/2026-04: Budget=£-0.00M, Forecast=£0.00M, Variance=£0.00M
+  NetImpairment/Prime/2026-05: Budget=£-0.00M, Forecast=£0.00M, Variance=£0.00M
+  NetImpairment/Prime/2026-06: Budget=£-0.00M, Forecast=£-0.00M, Variance=£0.00M
+  NetImpairment/Prime/2026-07: Budget=£-0.00M, Forecast=£0.00M, Variance=£0.00M
+  Revenue/Near Prime Medium/2025-11: Budget=£1.66M, Forecast=£1.67M, Variance=£0.01M
+  Revenue/Near Prime Medium/2025-12: Budget=£1.71M, Forecast=£1.60M, Variance=£-0.11M
+  Revenue/Near Prime Medium/2026-01: Budget=£1.65M, Forecast=£1.53M, Variance=£-0.12M
+  Revenue/Near Prime Medium/2026-02: Budget=£1.40M, Forecast=£1.47M, Variance=£0.07M
+  Revenue/Near Prime Medium/2026-03: Budget=£1.53M, Forecast=£1.41M, Variance=£-0.11M
+  Revenue/Near Prime Medium/2026-04: Budget=£1.43M, Forecast=£1.35M, Variance=£-0.08M
+  Revenue/Near Prime Medium/2026-05: Budget=£1.45M, Forecast=£1.31M, Variance=£-0.14M
+  Revenue/Near Prime Medium/2026-06: Budget=£1.37M, Forecast=£1.26M, Variance=£-0.11M
+  Revenue/Near Prime Medium/2026-07: Budget=£1.38M, Forecast=£1.21M, Variance=£-0.17M
+  Revenue/Near Prime Small/2025-11: Budget=£0.73M, Forecast=£0.74M, Variance=£0.01M
+  Revenue/Near Prime Small/2025-12: Budget=£0.72M, Forecast=£0.70M, Variance=£-0.02M
+  Revenue/Near Prime Small/2026-01: Budget=£0.68M, Forecast=£0.66M, Variance=£-0.02M
+  Revenue/Near Prime Small/2026-02: Budget=£0.57M, Forecast=£0.63M, Variance=£0.05M
+  Revenue/Near Prime Small/2026-03: Budget=£0.60M, Forecast=£0.59M, Variance=£-0.01M
+  Revenue/Near Prime Small/2026-04: Budget=£0.56M, Forecast=£0.56M, Variance=£0.00M
+  Revenue/Near Prime Small/2026-05: Budget=£0.55M, Forecast=£0.54M, Variance=£-0.01M
+  Revenue/Near Prime Small/2026-06: Budget=£0.51M, Forecast=£0.52M, Variance=£0.01M
+  Revenue/Near Prime Small/2026-07: Budget=£0.50M, Forecast=£0.49M, Variance=£-0.01M
+  Revenue/Non Prime/2025-11: Budget=£3.52M, Forecast=£3.09M, Variance=£-0.42M
+  Revenue/Non Prime/2025-12: Budget=£3.38M, Forecast=£2.80M, Variance=£-0.58M
+  Revenue/Non Prime/2026-01: Budget=£3.18M, Forecast=£2.51M, Variance=£-0.67M
+  Revenue/Non Prime/2026-02: Budget=£2.58M, Forecast=£2.27M, Variance=£-0.32M
+  Revenue/Non Prime/2026-03: Budget=£2.75M, Forecast=£2.06M, Variance=£-0.69M
+  Revenue/Non Prime/2026-04: Budget=£2.51M, Forecast=£1.85M, Variance=£-0.66M
+  Revenue/Non Prime/2026-05: Budget=£2.46M, Forecast=£1.72M, Variance=£-0.74M
+  Revenue/Non Prime/2026-06: Budget=£2.24M, Forecast=£1.62M, Variance=£-0.62M
+  Revenue/Non Prime/2026-07: Budget=£2.19M, Forecast=£1.48M, Variance=£-0.71M
+  Revenue/Prime/2025-11: Budget=£0.03M, Forecast=£0.03M, Variance=£-0.00M
+  Revenue/Prime/2025-12: Budget=£0.03M, Forecast=£0.02M, Variance=£-0.00M
+  Revenue/Prime/2026-01: Budget=£0.03M, Forecast=£0.02M, Variance=£-0.00M
+  Revenue/Prime/2026-02: Budget=£0.02M, Forecast=£0.02M, Variance=£-0.00M
+  Revenue/Prime/2026-03: Budget=£0.02M, Forecast=£0.02M, Variance=£-0.00M
+  Revenue/Prime/2026-04: Budget=£0.02M, Forecast=£0.02M, Variance=£-0.00M
+  Revenue/Prime/2026-05: Budget=£0.02M, Forecast=£0.02M, Variance=£-0.01M
+  Revenue/Prime/2026-06: Budget=£0.02M, Forecast=£0.01M, Variance=£-0.01M
+  Revenue/Prime/2026-07: Budget=£0.02M, Forecast=£0.01M, Variance=£-0.01M
