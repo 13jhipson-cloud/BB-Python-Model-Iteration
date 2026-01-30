@@ -1,0 +1,6 @@
+# Output directories
+impairment_calibration/
+stable_output/
+calibration_output/
+*.pyc
+__pycache__/
