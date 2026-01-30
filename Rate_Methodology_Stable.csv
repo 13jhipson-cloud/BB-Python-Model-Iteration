@@ -1,0 +1,66 @@
+Segment,Cohort,Metric,MOB_Start,MOB_End,Approach,Param1,Param2,Explanation
+NRP-S,ALL,Coll_Principal,0,12,DonorCohort,202405,,Young-donor
+NRP-S,ALL,Coll_Principal,13,36,CohortAvg,6,,Mid-6mo avg
+NRP-S,ALL,Coll_Principal,37,999,CohortAvg,6,,Mature-6mo
+NRP-L,ALL,Coll_Interest,0,12,DonorCohort,202405,,Young-donor
+NRP-L,ALL,Coll_Interest,13,999,CohortAvg,6,,Mid/mature-6mo
+NRP-M,ALL,InterestRevenue,0,12,DonorCohort,202405,,Young-donor
+NRP-M,ALL,InterestRevenue,13,36,CohortTrend,6,,Mid-trend
+NRP-M,ALL,InterestRevenue,37,999,CohortAvg,6,,Mature-flat
+NRP-M,ALL,WO_Other,0,999,CohortAvg,12,,Rare-12mo
+NRP-M,ALL,WO_DebtSold,0,999,SegMedian,,,Portfolio decision
+NRP-M,ALL,Debt_Sale_Coverage_Ratio,0,999,Manual,0.785,,DS coverage
+NRP-M,ALL,Debt_Sale_Proceeds_Rate,0,999,Manual,0.24,,Proceeds 24p
+NON PRIME,ALL,Coll_Principal,0,12,DonorCohort,202404,,Young-donor
+NON PRIME,ALL,Coll_Principal,13,36,CohortAvg,6,,Mid-6mo avg
+NON PRIME,ALL,Coll_Principal,37,999,CohortAvg,6,,Mature-6mo
+NON PRIME,ALL,Coll_Interest,0,12,DonorCohort,202404,,Young-donor
+NON PRIME,ALL,Coll_Interest,13,999,CohortAvg,6,,Mid/mature-6mo
+NON PRIME,ALL,InterestRevenue,0,12,DonorCohort,202404,,Young-donor
+NON PRIME,ALL,InterestRevenue,13,36,CohortTrend,6,,Mid-trend
+NON PRIME,ALL,InterestRevenue,37,999,CohortAvg,6,,Mature-flat
+NON PRIME,ALL,WO_Other,0,999,CohortAvg,12,,Rare-12mo
+NON PRIME,ALL,WO_DebtSold,0,999,SegMedian,,,Portfolio decision
+NON PRIME,ALL,Debt_Sale_Coverage_Ratio,0,999,Manual,0.785,,DS coverage
+NON PRIME,ALL,Debt_Sale_Proceeds_Rate,0,999,Manual,0.24,,Proceeds 24p
+PRIME,ALL,Coll_Principal,0,12,DonorCohort,202405,,Young-donor
+PRIME,ALL,Coll_Principal,13,36,CohortAvg,6,,Mid-6mo avg
+PRIME,ALL,Coll_Principal,37,999,CohortAvg,6,,Mature-6mo
+PRIME,ALL,Coll_Interest,0,12,DonorCohort,202405,,Young-donor
+PRIME,ALL,Coll_Interest,13,999,CohortAvg,6,,Mid/mature-6mo
+PRIME,ALL,InterestRevenue,0,12,DonorCohort,202405,,Young-donor
+PRIME,ALL,InterestRevenue,13,36,CohortTrend,6,,Mid-trend
+PRIME,ALL,InterestRevenue,37,999,CohortAvg,6,,Mature-flat
+PRIME,ALL,WO_Other,0,999,CohortAvg,12,,Rare-12mo
+PRIME,ALL,WO_DebtSold,0,999,SegMedian,,,Portfolio decision
+PRIME,ALL,Debt_Sale_Coverage_Ratio,0,999,Manual,0.785,,DS coverage
+PRIME,ALL,Debt_Sale_Proceeds_Rate,0,999,Manual,0.24,,Proceeds 24p
+NRP-S,ALL,InterestRevenue,0,12,DonorCohort,202405,,Young-donor
+NRP-S,ALL,InterestRevenue,13,36,CohortTrend,6,,Mid-trend
+NRP-S,ALL,InterestRevenue,37,999,CohortAvg,6,,Mature-flat
+NRP-L,ALL,WO_Other,0,999,CohortAvg,12,,Rare-12mo
+NRP-L,ALL,WO_DebtSold,0,999,SegMedian,,,Portfolio decision
+NRP-L,ALL,Debt_Sale_Coverage_Ratio,0,999,Manual,0.785,,DS coverage
+NRP-L,ALL,Debt_Sale_Proceeds_Rate,0,999,Manual,0.24,,Proceeds 24p
+NRP-S,ALL,WO_Other,0,999,CohortAvg,12,,Rare-12mo
+NRP-S,ALL,WO_DebtSold,0,999,SegMedian,,,Portfolio decision
+NRP-S,ALL,Debt_Sale_Coverage_Ratio,0,999,Manual,0.785,,DS coverage
+NRP-S,ALL,Debt_Sale_Proceeds_Rate,0,999,Manual,0.24,,Proceeds 24p
+NRP-M,ALL,Coll_Principal,0,12,DonorCohort,202405,,Young-donor
+NRP-M,ALL,Coll_Principal,13,36,CohortAvg,6,,Mid-6mo avg
+NRP-M,ALL,Coll_Principal,37,999,CohortAvg,6,,Mature-6mo
+NRP-M,ALL,Coll_Interest,0,12,DonorCohort,202405,,Young-donor
+NRP-M,ALL,Coll_Interest,13,999,CohortAvg,6,,Mid/mature-6mo
+NRP-L,ALL,Coll_Interest,0,12,DonorCohort,202405,,Young-donor
+NRP-L,ALL,Coll_Interest,13,999,CohortAvg,6,,Mid/mature-6mo
+NRP-L,ALL,Coll_Principal,0,12,DonorCohort,202405,,Young-donor
+NRP-L,ALL,Coll_Principal,13,36,CohortAvg,6,,Mid-6mo avg
+NRP-L,ALL,Coll_Principal,37,999,CohortAvg,6,,Mature-6mo
+NRP-L,ALL,InterestRevenue,0,12,DonorCohort,202405,,Young-donor
+NRP-L,ALL,InterestRevenue,13,36,CohortTrend,6,,Mid-trend
+NRP-L,ALL,InterestRevenue,37,999,CohortAvg,6,,Mature-flat
+NON PRIME,ALL,Total_Coverage_Ratio,0,999,CohortAvg,12,,12-month avg for stability
+NRP-S,ALL,Total_Coverage_Ratio,0,999,CohortAvg,12,,12-month avg for stability
+NRP-M,ALL,Total_Coverage_Ratio,0,999,CohortAvg,12,,12-month avg for stability
+NRP-L,ALL,Total_Coverage_Ratio,0,999,CohortAvg,12,,12-month avg for stability
+PRIME,ALL,Total_Coverage_Ratio,0,999,CohortAvg,12,,12-month avg for stability
