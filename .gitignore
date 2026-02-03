@@ -2,5 +2,9 @@
 impairment_calibration/
 stable_output/
 calibration_output/
+v37_output/
+v39_output/
 *.pyc
 __pycache__/
+# Temporary analysis scripts
+search_16899*.py
