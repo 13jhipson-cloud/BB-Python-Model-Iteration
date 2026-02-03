@@ -1,0 +1,206 @@
+Segment,Cohort,Metric,MOB_Start,MOB_End,Approach,Param1,Param2,Explanation
+ALL,202509,Coll_Interest,0,999,DonorCohort,202405.0,,Original budget rate
+ALL,ALL,Coll_Interest,0,999,CohortTrend,,,Original budget rate
+NON PRIME,202505,Coll_Interest,0,999,Manual,-0.0367604171343709,,Original budget rate
+NON PRIME,202508,Coll_Interest,0,999,Manual,-0.0327943245609125,,Original budget rate
+NON PRIME,202504,Coll_Interest,0,999,Manual,-0.0374267755755324,,Original budget rate
+NON PRIME,202506,Coll_Interest,0,999,Manual,-0.0382742348233002,,Original budget rate
+NON PRIME,202507,Coll_Interest,0,999,Manual,-0.0410470796696782,,Original budget rate
+NRP-L,202505,Coll_Interest,0,999,Manual,-0.0167418668976997,,Original budget rate
+NRP-L,202508,Coll_Interest,0,999,Manual,-0.015137830746605,,Original budget rate
+NRP-L,202505,Coll_Interest,0,999,Manual,-0.0167473533774958,,Original budget rate
+NRP-L,202506,Coll_Interest,0,999,Manual,-0.0169379349869588,,Original budget rate
+NRP-L,202507,Coll_Interest,0,999,Manual,-0.0169379349869588,,Original budget rate
+NRP-L,202508,Coll_Interest,0,999,Manual,-0.0185079916611158,,Original budget rate
+NRP-M,202505,Coll_Interest,0,999,Manual,-0.0166093480315238,,Original budget rate
+NRP-M,202508,Coll_Interest,0,999,Manual,-0.0121558733749129,,Original budget rate
+NRP-M,202506,Coll_Interest,0,999,Manual,-0.0169099797949974,,Original budget rate
+NRP-M,202507,Coll_Interest,0,999,Manual,-0.017175780223928,,Original budget rate
+NRP-M,202508,Coll_Interest,0,999,Manual,-0.0162909730017493,,Original budget rate
+NRP-S,202505,Coll_Interest,0,999,Manual,-0.0215501593200356,,Original budget rate
+NRP-S,202508,Coll_Interest,0,999,Manual,-0.0182997885256867,,Original budget rate
+NRP-S,202506,Coll_Interest,0,999,Manual,-0.022653513151231,,Original budget rate
+NRP-S,202507,Coll_Interest,0,999,Manual,-0.0220232039825231,,Original budget rate
+NRP-S,202510,Coll_Interest,0,999,Manual,-0.0238794316940855,,Original budget rate
+PRIME,202508,Coll_Interest,0,999,Manual,-0.0039229227021562,,Original budget rate
+PRIME,202507,Coll_Interest,0,999,Manual,-0.0115526342997501,,Original budget rate
+PRIME,202508,Coll_Interest,0,999,Manual,-0.010430272558878,,Original budget rate
+PRIME,202511,Coll_Interest,0,999,Manual,-0.0115526342997501,,Original budget rate
+ALL,201912,Coll_Principal,0,999,Manual,0.0,,Original budget rate
+ALL,202406,Coll_Principal,0,999,CohortAvg,,,Original budget rate
+ALL,202407,Coll_Principal,0,999,CohortTrend,,,Original budget rate
+ALL,202408,Coll_Principal,0,999,CohortTrend,,,Original budget rate
+ALL,202409,Coll_Principal,0,999,CohortTrend,,,Original budget rate
+ALL,202410,Coll_Principal,0,999,CohortAvg,,,Original budget rate
+ALL,202411,Coll_Principal,0,999,CohortTrend,,,Original budget rate
+ALL,202412,Coll_Principal,0,999,CohortAvg,,,Original budget rate
+ALL,202501,Coll_Principal,0,999,CohortAvg,,,Original budget rate
+ALL,202502,Coll_Principal,0,999,CohortTrend,,,Original budget rate
+ALL,202503,Coll_Principal,0,999,CohortAvg,,,Original budget rate
+ALL,202504,Coll_Principal,0,999,DonorCohort,202404.0,,Original budget rate
+ALL,202505,Coll_Principal,0,999,DonorCohort,202404.0,,Original budget rate
+ALL,202506,Coll_Principal,0,999,DonorCohort,202404.0,,Original budget rate
+ALL,202507,Coll_Principal,0,999,DonorCohort,202405.0,,Original budget rate
+ALL,202508,Coll_Principal,0,999,DonorCohort,202405.0,,Original budget rate
+ALL,202509,Coll_Principal,0,999,DonorCohort,202405.0,,Original budget rate
+ALL,ALL,Coll_Principal,0,999,CohortAvg,6.0,,Original budget rate
+NON PRIME,202001,Coll_Principal,0,999,Manual,-0.05,,Original budget rate
+NON PRIME,202101,Coll_Principal,0,999,CohortTrend,,,Original budget rate
+NON PRIME,202201,Coll_Principal,4,15,DonorCohort,202101.0,,Original budget rate
+NON PRIME,202301,Coll_Principal,4,15,DonorCohort,202101.0,,Original budget rate
+NON PRIME,202404,Coll_Principal,4,15,DonorCohort,202001.0,,Original budget rate
+NON PRIME,202405,Coll_Principal,4,15,DonorCohort,202001.0,,Original budget rate
+NRP-L,202408,Coll_Principal,0,999,CohortAvg,,,Original budget rate
+NRP-L,202411,Coll_Principal,0,999,CohortAvg,,,Original budget rate
+NRP-M,202101,Coll_Principal,0,999,CohortTrend,,,Original budget rate
+NRP-M,202201,Coll_Principal,4,15,DonorCohort,202101.0,,Original budget rate
+NRP-M,202301,Coll_Principal,4,15,DonorCohort,202101.0,,Original budget rate
+NRP-M,202404,Coll_Principal,4,15,DonorCohort,202101.0,,Original budget rate
+NRP-M,202405,Coll_Principal,4,15,DonorCohort,202001.0,,Original budget rate
+NRP-S,202001,Coll_Principal,16,40,DonorCohort,201901.0,,Original budget rate
+NRP-S,202101,Coll_Principal,0,999,CohortTrend,,,Original budget rate
+NRP-S,202201,Coll_Principal,4,15,DonorCohort,202101.0,,Original budget rate
+NRP-S,202301,Coll_Principal,4,15,DonorCohort,202101.0,,Original budget rate
+NRP-S,202404,Coll_Principal,4,15,DonorCohort,202101.0,,Original budget rate
+NRP-S,202405,Coll_Principal,4,15,DonorCohort,202101.0,,Original budget rate
+PRIME,202101,Coll_Principal,0,999,CohortTrend,,,Original budget rate
+PRIME,202201,Coll_Principal,4,15,DonorCohort,202101.0,,Original budget rate
+NON PRIME,ALL,Debt_Sale_Coverage_Ratio,0,999,Manual,0.785,,DS coverage
+NRP-L,ALL,Debt_Sale_Coverage_Ratio,0,999,Manual,0.785,,DS coverage
+NRP-M,ALL,Debt_Sale_Coverage_Ratio,0,999,Manual,0.785,,DS coverage
+NRP-S,ALL,Debt_Sale_Coverage_Ratio,0,999,Manual,0.785,,DS coverage
+PRIME,ALL,Debt_Sale_Coverage_Ratio,0,999,Manual,0.785,,DS coverage
+NON PRIME,ALL,Debt_Sale_Proceeds_Rate,0,999,Manual,0.24,,Proceeds 24p
+NRP-L,ALL,Debt_Sale_Proceeds_Rate,0,999,Manual,0.24,,Proceeds 24p
+NRP-M,ALL,Debt_Sale_Proceeds_Rate,0,999,Manual,0.24,,Proceeds 24p
+NRP-S,ALL,Debt_Sale_Proceeds_Rate,0,999,Manual,0.24,,Proceeds 24p
+PRIME,ALL,Debt_Sale_Proceeds_Rate,0,999,Manual,0.24,,Proceeds 24p
+ALL,202505,InterestRevenue,0,999,CohortAvg,,,Original budget rate
+ALL,202506,InterestRevenue,0,999,CohortAvg,,,Original budget rate
+ALL,ALL,InterestRevenue,0,999,CohortTrend,,,Original budget rate
+NON PRIME,202507,InterestRevenue,0,999,Manual,0.4534,,Original budget rate
+NON PRIME,202508,InterestRevenue,0,999,Manual,0.4552,,Original budget rate
+NON PRIME,202509,InterestRevenue,0,999,Manual,0.4552,,Original budget rate
+NRP-L,202507,InterestRevenue,0,999,Manual,0.2022,,Original budget rate
+NRP-L,202508,InterestRevenue,0,999,Manual,0.1838,,Original budget rate
+NRP-L,202509,InterestRevenue,0,999,Manual,0.1838,,Original budget rate
+NRP-M,202507,InterestRevenue,0,999,Manual,0.1867,,Original budget rate
+NRP-M,202508,InterestRevenue,0,999,Manual,0.189,,Original budget rate
+NRP-M,202509,InterestRevenue,0,999,Manual,0.189,,Original budget rate
+NRP-S,202507,InterestRevenue,0,999,Manual,0.2548,,Original budget rate
+NRP-S,202508,InterestRevenue,0,999,Manual,0.2461,,Original budget rate
+NRP-S,202509,InterestRevenue,0,999,Manual,0.2461,,Original budget rate
+PRIME,202507,InterestRevenue,0,999,Manual,0.1356,,Original budget rate
+PRIME,202508,InterestRevenue,0,999,Manual,0.1349,,Original budget rate
+PRIME,202509,InterestRevenue,0,999,Manual,0.1349,,Original budget rate
+NON PRIME,201912,Total_Coverage_Ratio,0,999,CohortAvg,6.0,,average looks sensible for mature cohorts
+NON PRIME,202001,Total_Coverage_Ratio,0,999,CohortAvg,6.0,,average looks sensible for mature cohorts
+NON PRIME,202101,Total_Coverage_Ratio,0,999,CohortAvg,6.0,,average looks sensible for mature cohorts
+NON PRIME,202201,Total_Coverage_Ratio,0,999,SegMedian,,,CHANGED from DonorCohort to SegMedian for lower impairment
+NON PRIME,202301,Total_Coverage_Ratio,0,999,SegMedian,,,CHANGED from DonorCohort to SegMedian for lower impairment
+NON PRIME,202404,Total_Coverage_Ratio,0,999,SegMedian,,,CHANGED from DonorCohort to SegMedian for lower impairment
+NON PRIME,202405,Total_Coverage_Ratio,0,999,SegMedian,,,CHANGED from DonorCohort to SegMedian for lower impairment
+NON PRIME,202406,Total_Coverage_Ratio,0,999,SegMedian,,,CHANGED from DonorCohort to SegMedian for lower impairment
+NON PRIME,202407,Total_Coverage_Ratio,0,999,SegMedian,,,CHANGED from DonorCohort to SegMedian for lower impairment
+NON PRIME,202408,Total_Coverage_Ratio,0,999,SegMedian,,,CHANGED from DonorCohort to SegMedian for lower impairment
+NON PRIME,202409,Total_Coverage_Ratio,0,999,SegMedian,,,CHANGED from DonorCohort to SegMedian for lower impairment
+NON PRIME,202410,Total_Coverage_Ratio,0,999,SegMedian,,,CHANGED from DonorCohort to SegMedian for lower impairment
+NON PRIME,202411,Total_Coverage_Ratio,0,999,SegMedian,,,CHANGED from DonorCohort to SegMedian for lower impairment
+NON PRIME,202412,Total_Coverage_Ratio,0,999,SegMedian,,,CHANGED from DonorCohort to SegMedian for lower impairment
+NON PRIME,202501,Total_Coverage_Ratio,0,999,SegMedian,,,CHANGED from DonorCohort to SegMedian for lower impairment
+NON PRIME,202502,Total_Coverage_Ratio,0,999,SegMedian,,,CHANGED from DonorCohort to SegMedian for lower impairment
+NON PRIME,202503,Total_Coverage_Ratio,0,999,SegMedian,,,CHANGED from DonorCohort to SegMedian for lower impairment
+NON PRIME,202504,Total_Coverage_Ratio,0,999,SegMedian,,,CHANGED from DonorCohort to SegMedian for lower impairment
+NON PRIME,202505,Total_Coverage_Ratio,0,999,SegMedian,,,CHANGED from DonorCohort to SegMedian for lower impairment
+NON PRIME,202506,Total_Coverage_Ratio,0,999,SegMedian,,,CHANGED from DonorCohort to SegMedian for lower impairment
+NON PRIME,202507,Total_Coverage_Ratio,0,999,SegMedian,,,CHANGED from DonorCohort to SegMedian for lower impairment
+NON PRIME,202508,Total_Coverage_Ratio,0,999,SegMedian,,,CHANGED from DonorCohort to SegMedian for lower impairment
+NON PRIME,202509,Total_Coverage_Ratio,0,999,SegMedian,,,CHANGED from DonorCohort to SegMedian for lower impairment
+NRP-L,202301,Total_Coverage_Ratio,0,999,CohortTrend,,,
+NRP-L,202404,Total_Coverage_Ratio,0,999,CohortTrend,,,
+NRP-L,202405,Total_Coverage_Ratio,0,999,CohortTrend,,,
+NRP-L,202406,Total_Coverage_Ratio,0,999,CohortTrend,,,
+NRP-L,202407,Total_Coverage_Ratio,0,999,CohortTrend,,,
+NRP-L,202408,Total_Coverage_Ratio,0,999,CohortTrend,,,
+NRP-L,202409,Total_Coverage_Ratio,0,999,CohortAvg,6.0,,
+NRP-L,202410,Total_Coverage_Ratio,0,999,CohortAvg,6.0,,
+NRP-L,202411,Total_Coverage_Ratio,0,999,CohortAvg,6.0,,
+NRP-L,202412,Total_Coverage_Ratio,0,999,CohortAvg,6.0,,
+NRP-L,202501,Total_Coverage_Ratio,0,999,CohortAvg,6.0,,
+NRP-L,202502,Total_Coverage_Ratio,0,999,CohortAvg,6.0,,
+NRP-L,202503,Total_Coverage_Ratio,0,999,CohortAvg,6.0,,
+NRP-L,202504,Total_Coverage_Ratio,0,999,CohortAvg,6.0,,
+NRP-L,202505,Total_Coverage_Ratio,0,999,CohortAvg,6.0,,
+NRP-L,202506,Total_Coverage_Ratio,0,999,CohortAvg,6.0,,
+NRP-L,202507,Total_Coverage_Ratio,0,999,CohortAvg,6.0,,
+NRP-L,202508,Total_Coverage_Ratio,0,999,CohortAvg,6.0,,
+NRP-L,202509,Total_Coverage_Ratio,0,999,CohortAvg,6.0,,
+NRP-M,202001,Total_Coverage_Ratio,0,999,Manual,0.0,,negligible remaining balance
+NRP-M,202101,Total_Coverage_Ratio,0,999,Manual,0.0,,negligible remaining balance
+NRP-M,202201,Total_Coverage_Ratio,0,999,CohortTrend,,,
+NRP-M,202301,Total_Coverage_Ratio,0,999,Manual,0.0,,negligible remaining balance
+NRP-M,202404,Total_Coverage_Ratio,0,999,CohortTrend,,,
+NRP-M,202405,Total_Coverage_Ratio,0,999,CohortTrend,,,
+NRP-M,202406,Total_Coverage_Ratio,0,999,CohortTrend,,,
+NRP-M,202407,Total_Coverage_Ratio,0,999,CohortTrend,,,
+NRP-M,202408,Total_Coverage_Ratio,0,999,CohortTrend,,,
+NRP-M,202409,Total_Coverage_Ratio,0,999,CohortTrend,,,
+NRP-M,202410,Total_Coverage_Ratio,0,999,CohortTrend,,,
+NRP-M,202411,Total_Coverage_Ratio,0,999,CohortTrend,,,
+NRP-M,202412,Total_Coverage_Ratio,0,999,CohortTrend,,,
+NRP-M,202501,Total_Coverage_Ratio,0,999,CohortTrend,,,
+NRP-M,202502,Total_Coverage_Ratio,0,999,CohortTrend,,,
+NRP-M,202503,Total_Coverage_Ratio,0,999,CohortTrend,,,
+NRP-M,202504,Total_Coverage_Ratio,0,999,CohortTrend,,,
+NRP-M,202505,Total_Coverage_Ratio,0,999,CohortTrend,,,
+NRP-M,202506,Total_Coverage_Ratio,0,999,CohortTrend,,,
+NRP-M,202507,Total_Coverage_Ratio,0,999,CohortTrend,,,
+NRP-M,202508,Total_Coverage_Ratio,0,999,CohortTrend,,,
+NRP-M,202509,Total_Coverage_Ratio,0,999,CohortTrend,,,
+NRP-S,201912,Total_Coverage_Ratio,0,999,CohortAvg,,,
+NRP-S,202001,Total_Coverage_Ratio,0,999,Manual,0.0,,negligible remaining balance
+NRP-S,202101,Total_Coverage_Ratio,0,999,Manual,0.0,,negligible remaining balance
+NRP-S,202201,Total_Coverage_Ratio,0,999,CohortTrend,,,
+NRP-S,202301,Total_Coverage_Ratio,0,999,CohortTrend,,,
+NRP-S,202404,Total_Coverage_Ratio,0,999,CohortTrend,,,
+NRP-S,202405,Total_Coverage_Ratio,0,999,CohortTrend,,,
+NRP-S,202406,Total_Coverage_Ratio,0,999,CohortTrend,,,
+NRP-S,202407,Total_Coverage_Ratio,0,999,CohortTrend,,,
+NRP-S,202408,Total_Coverage_Ratio,0,999,CohortTrend,,,
+NRP-S,202409,Total_Coverage_Ratio,0,999,CohortTrend,,,
+NRP-S,202410,Total_Coverage_Ratio,0,999,CohortTrend,,,
+NRP-S,202411,Total_Coverage_Ratio,0,999,CohortTrend,,,
+NRP-S,202412,Total_Coverage_Ratio,0,999,CohortTrend,,,
+NRP-S,202501,Total_Coverage_Ratio,0,999,CohortTrend,,,
+NRP-S,202502,Total_Coverage_Ratio,0,999,CohortTrend,,,
+NRP-S,202503,Total_Coverage_Ratio,0,999,CohortTrend,,,
+NRP-S,202504,Total_Coverage_Ratio,0,999,CohortTrend,,,
+NRP-S,202505,Total_Coverage_Ratio,0,999,CohortTrend,,,
+NRP-S,202506,Total_Coverage_Ratio,0,999,CohortTrend,,,
+NRP-S,202507,Total_Coverage_Ratio,0,999,CohortTrend,,,
+NRP-S,202508,Total_Coverage_Ratio,0,999,CohortTrend,,,
+NRP-S,202509,Total_Coverage_Ratio,0,999,CohortTrend,,,
+PRIME,202101,Total_Coverage_Ratio,0,999,Manual,0.0,,negligible remaining balance
+PRIME,202201,Total_Coverage_Ratio,0,999,CohortAvg,6.0,,PRIME mature
+PRIME,202405,Total_Coverage_Ratio,0,999,CohortAvg,6.0,,WHY ARE THESE RATES 0???
+PRIME,202407,Total_Coverage_Ratio,0,999,CohortAvg,6.0,,
+PRIME,202409,Total_Coverage_Ratio,0,999,CohortAvg,6.0,,
+PRIME,202504,Total_Coverage_Ratio,0,999,CohortAvg,6.0,,
+PRIME,202507,Total_Coverage_Ratio,0,999,CohortAvg,6.0,,
+PRIME,202508,Total_Coverage_Ratio,0,999,CohortAvg,6.0,,
+PRIME,202509,Total_Coverage_Ratio,0,999,CohortAvg,6.0,,
+NON PRIME,ALL,WO_DebtSold,0,999,Zero,,,Reduce WO to preserve GBV
+NRP-L,ALL,WO_DebtSold,0,999,Zero,,,Reduce WO to preserve GBV
+NRP-M,ALL,WO_DebtSold,0,999,Zero,,,Reduce WO to preserve GBV
+NRP-S,ALL,WO_DebtSold,0,999,Zero,,,Reduce WO to preserve GBV
+PRIME,ALL,WO_DebtSold,0,999,Zero,,,Reduce WO to preserve GBV
+NON PRIME,ALL,WO_Other,0,999,CohortAvg,12.0,,Rare-12mo
+NRP-L,ALL,WO_Other,0,999,CohortAvg,12.0,,Rare-12mo
+NRP-M,ALL,WO_Other,0,999,CohortAvg,12.0,,Rare-12mo
+NRP-S,ALL,WO_Other,0,999,CohortAvg,12.0,,Rare-12mo
+PRIME,ALL,WO_Other,0,999,CohortAvg,12.0,,Rare-12mo
+NON PRIME,ALL,ContraSettlements_Principal,0,999,Manual,-0.0102,,PQ contra rate 1.02%
+NRP-L,ALL,ContraSettlements_Principal,0,999,Zero,,,PQ no contra for NRP-L
+NRP-M,ALL,ContraSettlements_Principal,0,999,Manual,-0.0049,,PQ contra rate 0.49%
+NRP-S,ALL,ContraSettlements_Principal,0,999,Manual,-0.0113,,PQ contra rate 1.13%
+PRIME,ALL,ContraSettlements_Principal,0,999,Zero,,,PQ no contra for PRIME

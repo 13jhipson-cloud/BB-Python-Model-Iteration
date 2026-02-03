@@ -1,0 +1,119 @@
+Segment,Cohort,Metric,MOB_Start,MOB_End,Approach,Param1,Param2,Explanation
+# ============================================================================
+# V36 METHODOLOGY - EXACT MATCH TO ORIGINAL POWER QUERY FORECAST
+# ============================================================================
+# This replicates the methodology used in 'BackBook Forecast - Baseline Outputs'
+# which produced the numbers that went into the Budget Consol
+# ============================================================================
+
+# DEFAULT RULES (applied when no specific override exists)
+ALL,ALL,Coll_Principal,0,999,CohortAvg,6.0,,Default: 6-month cohort average
+ALL,ALL,Coll_Interest,0,999,CohortTrend,,,Default: cohort trend
+ALL,ALL,InterestRevenue,0,999,CohortTrend,,,Default: cohort trend
+
+# 201912 COHORT - Zero collections (manual runoff)
+ALL,201912,Coll_Principal,0,999,Manual,0.0,,Manual runoff - no collections
+
+# 202001 COHORT OVERRIDES
+NON PRIME,202001,Coll_Principal,0,999,Manual,-0.05,,Cohort still collecting at ~5% rate
+NRP-S,202001,Coll_Principal,16,40,DonorCohort,201901,,Use 201901 as donor
+
+# 202101 COHORT - Use CohortTrend
+PRIME,202101,Coll_Principal,0,999,CohortTrend,,,CohortTrend for Prime
+NON PRIME,202101,Coll_Principal,0,999,CohortTrend,,,CohortTrend for Non Prime
+NRP-M,202101,Coll_Principal,0,999,CohortTrend,,,CohortTrend for NRP-M
+NRP-S,202101,Coll_Principal,0,999,CohortTrend,,,CohortTrend for NRP-S
+
+# 202201 COHORT - DonorCohort 202101 for MOB 4-15
+NON PRIME,202201,Coll_Principal,4,15,DonorCohort,202101,,Use 202101 donor
+NRP-M,202201,Coll_Principal,4,15,DonorCohort,202101,,Use 202101 donor
+NRP-S,202201,Coll_Principal,4,15,DonorCohort,202101,,Use 202101 donor
+PRIME,202201,Coll_Principal,4,15,DonorCohort,202101,,Use 202101 donor
+
+# 202301 COHORT - DonorCohort 202101 for MOB 4-15
+NON PRIME,202301,Coll_Principal,4,15,DonorCohort,202101,,Use 202101 donor
+NRP-M,202301,Coll_Principal,4,15,DonorCohort,202101,,Use 202101 donor
+NRP-S,202301,Coll_Principal,4,15,DonorCohort,202101,,Use 202101 donor
+
+# 202404 COHORT - DonorCohort overrides
+NON PRIME,202404,Coll_Principal,4,15,DonorCohort,202001,,Use 202001 donor for Non Prime
+NRP-M,202404,Coll_Principal,4,15,DonorCohort,202101,,Use 202101 donor
+NRP-S,202404,Coll_Principal,4,15,DonorCohort,202101,,Use 202101 donor
+
+# 202405 COHORT
+NON PRIME,202405,Coll_Principal,4,15,DonorCohort,202001,,Use 202001 donor
+NRP-M,202405,Coll_Principal,4,15,DonorCohort,202001,,Use 202001 donor
+NRP-S,202405,Coll_Principal,4,15,DonorCohort,202101,,Use 202101 donor
+
+# 2024-2025 COHORTS - Mix of CohortAvg and CohortTrend
+ALL,202406,Coll_Principal,0,999,CohortAvg,,,CohortAvg
+ALL,202407,Coll_Principal,0,999,CohortTrend,,,CohortTrend
+ALL,202408,Coll_Principal,0,999,CohortTrend,,,CohortTrend
+ALL,202409,Coll_Principal,0,999,CohortTrend,,,CohortTrend
+ALL,202410,Coll_Principal,0,999,CohortAvg,,,CohortAvg
+ALL,202411,Coll_Principal,0,999,CohortTrend,,,CohortTrend
+ALL,202412,Coll_Principal,0,999,CohortAvg,,,CohortAvg
+ALL,202501,Coll_Principal,0,999,CohortAvg,,,CohortAvg
+ALL,202502,Coll_Principal,0,999,CohortTrend,,,CohortTrend
+ALL,202503,Coll_Principal,0,999,CohortAvg,,,CohortAvg
+
+# Newest cohorts - DonorCohort approach
+ALL,202504,Coll_Principal,0,999,DonorCohort,202404,,Better MOB-curve than flat rate
+ALL,202505,Coll_Principal,0,999,DonorCohort,202404,,Better MOB-curve than flat rate
+ALL,202506,Coll_Principal,0,999,DonorCohort,202404,,Better MOB-curve than flat rate
+ALL,202507,Coll_Principal,0,999,DonorCohort,202405,,Better MOB-curve than flat rate
+ALL,202508,Coll_Principal,0,999,DonorCohort,202405,,Better MOB-curve than flat rate
+ALL,202509,Coll_Principal,0,999,DonorCohort,202405,,Better MOB-curve than flat rate
+
+# NRP-L specific overrides
+NRP-L,202408,Coll_Principal,0,999,CohortAvg,,,High volatility in trend
+NRP-L,202411,Coll_Principal,0,999,CohortAvg,,,High volatility in trend
+
+# Interest Revenue for newest cohorts (from PQ)
+ALL,202505,InterestRevenue,0,999,CohortAvg,,,CohortAvg
+ALL,202506,InterestRevenue,0,999,CohortAvg,,,CohortAvg
+NON PRIME,202507,InterestRevenue,0,999,Manual,0.4534,,Oct actual rate annualized
+NON PRIME,202508,InterestRevenue,0,999,Manual,0.4552,,Oct actual rate annualized
+NON PRIME,202509,InterestRevenue,0,999,Manual,0.4552,,Using 202508 as proxy
+NRP-L,202507,InterestRevenue,0,999,Manual,0.2022,,Oct actual rate
+NRP-L,202508,InterestRevenue,0,999,Manual,0.1838,,Oct actual rate
+NRP-L,202509,InterestRevenue,0,999,Manual,0.1838,,Using 202508 as proxy
+NRP-M,202507,InterestRevenue,0,999,Manual,0.1867,,Oct actual rate
+NRP-M,202508,InterestRevenue,0,999,Manual,0.189,,Oct actual rate
+NRP-M,202509,InterestRevenue,0,999,Manual,0.189,,Using 202508 as proxy
+NRP-S,202507,InterestRevenue,0,999,Manual,0.2548,,Oct actual rate
+NRP-S,202508,InterestRevenue,0,999,Manual,0.2461,,Oct actual rate
+NRP-S,202509,InterestRevenue,0,999,Manual,0.2461,,Using 202508 as proxy
+PRIME,202507,InterestRevenue,0,999,Manual,0.1356,,Oct actual rate
+PRIME,202508,InterestRevenue,0,999,Manual,0.1349,,Oct actual rate
+PRIME,202509,InterestRevenue,0,999,Manual,0.1349,,Using 202508 as proxy
+
+# Coll_Interest manual overrides for newest cohorts
+NON PRIME,202504,Coll_Interest,0,999,Manual,-0.0374,,Manual rate
+NON PRIME,202505,Coll_Interest,0,999,Manual,-0.0368,,Manual rate
+NON PRIME,202506,Coll_Interest,0,999,Manual,-0.0383,,Manual rate
+NON PRIME,202507,Coll_Interest,0,999,Manual,-0.0410,,Manual rate
+NON PRIME,202508,Coll_Interest,0,999,Manual,-0.0328,,Manual rate
+NRP-L,202505,Coll_Interest,0,999,Manual,-0.0167,,Manual rate
+NRP-L,202506,Coll_Interest,0,999,Manual,-0.0169,,Manual rate
+NRP-L,202507,Coll_Interest,0,999,Manual,-0.0169,,Manual rate
+NRP-L,202508,Coll_Interest,0,999,Manual,-0.0151,,Manual rate
+NRP-M,202505,Coll_Interest,0,999,Manual,-0.0166,,Manual rate
+NRP-M,202506,Coll_Interest,0,999,Manual,-0.0169,,Manual rate
+NRP-M,202507,Coll_Interest,0,999,Manual,-0.0172,,Manual rate
+NRP-M,202508,Coll_Interest,0,999,Manual,-0.0122,,Manual rate
+NRP-S,202505,Coll_Interest,0,999,Manual,-0.0216,,Manual rate
+NRP-S,202506,Coll_Interest,0,999,Manual,-0.0227,,Manual rate
+NRP-S,202507,Coll_Interest,0,999,Manual,-0.0220,,Manual rate
+NRP-S,202508,Coll_Interest,0,999,Manual,-0.0183,,Manual rate
+NRP-S,202510,Coll_Interest,0,999,Manual,-0.0239,,Manual rate
+PRIME,202507,Coll_Interest,0,999,Manual,-0.0116,,Manual rate
+PRIME,202508,Coll_Interest,0,999,Manual,-0.0039,,Manual rate
+PRIME,202511,Coll_Interest,0,999,Manual,-0.0116,,Manual rate
+ALL,202509,Coll_Interest,0,999,DonorCohort,202405,,Use donor
+
+# Write-offs and Debt Sale (standard settings)
+ALL,ALL,WO_DebtSold,0,999,Zero,,,No debt sales
+ALL,ALL,WO_Other,0,999,CohortAvg,12.0,,12-month average
+ALL,ALL,Debt_Sale_Coverage_Ratio,0,999,Manual,0.785,,Standard coverage
+ALL,ALL,Debt_Sale_Proceeds_Rate,0,999,Manual,0.24,,Standard proceeds
