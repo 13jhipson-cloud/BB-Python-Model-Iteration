@@ -3061,6 +3061,155 @@ def generate_combined_actuals_forecast(fact_raw: pd.DataFrame, forecast: pd.Data
     return combined
 
 
+def generate_backtest_comparison(fact_raw_full: pd.DataFrame, forecast: pd.DataFrame,
+                                  cutoff_date: str) -> pd.DataFrame:
+    """
+    Generate a Segment x Cohort x Month backtest comparison of forecast vs actuals.
+
+    Compares forecast output against post-cutoff actuals for the exact cohorts
+    present in the forecast (BB cohorts only), providing a true like-for-like
+    backtest comparison.
+
+    Args:
+        fact_raw_full: Full historical data (unfiltered, includes post-cutoff actuals)
+        forecast: Forecast output from the model
+        cutoff_date: Cutoff date string in YYYY-MM format
+
+    Returns:
+        pd.DataFrame: Backtest comparison with Forecast, Actual, Variance per metric
+    """
+    logger.info("Generating backtest comparison...")
+
+    cutoff_dt = end_of_month(pd.Timestamp(cutoff_date + '-01'))
+    cutoff_yyyymm = int(cutoff_date.replace('-', ''))
+
+    # Get the Segment x Cohort combinations in the forecast
+    forecast_cohorts = forecast[['Segment', 'Cohort']].drop_duplicates()
+    logger.info(f"  Forecast contains {len(forecast_cohorts)} Segment x Cohort combinations")
+
+    # Filter actuals to: post-cutoff months, BB cohorts only (matching forecast cohorts)
+    actuals = fact_raw_full[fact_raw_full['CalendarMonth'] >= cutoff_dt].copy()
+    actuals = actuals[actuals['Cohort'].astype(int) < cutoff_yyyymm].copy()
+    actuals = actuals.merge(forecast_cohorts, on=['Segment', 'Cohort'], how='inner')
+
+    if len(actuals) == 0:
+        logger.warning("  No post-cutoff actuals found for backtest comparison")
+        return pd.DataFrame()
+
+    # Map actuals column names for consistency
+    if 'ClosingGBV_Reported' in actuals.columns and 'ClosingGBV' not in actuals.columns:
+        actuals['ClosingGBV'] = actuals['ClosingGBV_Reported']
+
+    # Aggregate actuals by Segment x Cohort x CalendarMonth
+    actuals_agg = actuals.groupby(['Segment', 'Cohort', 'CalendarMonth']).agg({
+        'OpeningGBV': 'sum',
+        'Coll_Principal': 'sum',
+        'Coll_Interest': 'sum',
+        'InterestRevenue': 'sum',
+        'ClosingGBV': 'sum',
+        'WO_DebtSold': 'sum',
+        'WO_Other': 'sum',
+        'Provision_Balance': 'sum',
+    }).reset_index()
+
+    # Compute actual coverage ratio
+    actuals_agg['Total_Coverage_Ratio'] = np.where(
+        actuals_agg['ClosingGBV'] > 0,
+        actuals_agg['Provision_Balance'].abs() / actuals_agg['ClosingGBV'],
+        0
+    )
+
+    actuals_agg.rename(columns={'CalendarMonth': 'Month'}, inplace=True)
+
+    # Aggregate forecast by Segment x Cohort x ForecastMonth
+    forecast_agg_cols = {
+        'OpeningGBV': 'sum',
+        'Coll_Principal': 'sum',
+        'Coll_Interest': 'sum',
+        'InterestRevenue': 'sum',
+        'ClosingGBV': 'sum',
+        'WO_DebtSold': 'sum',
+        'WO_Other': 'sum',
+    }
+    # Add provision columns if they exist
+    if 'Total_Provision_Balance' in forecast.columns:
+        forecast_agg_cols['Total_Provision_Balance'] = 'sum'
+    if 'Total_Coverage_Ratio' in forecast.columns:
+        # Coverage ratio: weighted by ClosingGBV (will recompute after aggregation)
+        pass
+
+    fcst_agg = forecast.groupby(['Segment', 'Cohort', 'ForecastMonth']).agg(
+        forecast_agg_cols
+    ).reset_index()
+
+    # Compute forecast coverage ratio from aggregated values
+    if 'Total_Provision_Balance' in fcst_agg.columns:
+        fcst_agg['Total_Coverage_Ratio'] = np.where(
+            fcst_agg['ClosingGBV'] > 0,
+            fcst_agg['Total_Provision_Balance'] / fcst_agg['ClosingGBV'],
+            0
+        )
+
+    fcst_agg.rename(columns={'ForecastMonth': 'Month'}, inplace=True)
+
+    # Merge forecast and actuals
+    metrics = ['OpeningGBV', 'Coll_Principal', 'Coll_Interest', 'InterestRevenue',
+               'ClosingGBV', 'WO_DebtSold', 'WO_Other']
+    if 'Total_Provision_Balance' in fcst_agg.columns:
+        metrics.append('Total_Provision_Balance')
+    if 'Total_Coverage_Ratio' in fcst_agg.columns:
+        metrics.append('Total_Coverage_Ratio')
+
+    # Suffix: _Forecast and _Actual
+    merged = fcst_agg.merge(
+        actuals_agg,
+        on=['Segment', 'Cohort', 'Month'],
+        how='inner',
+        suffixes=('_Forecast', '_Actual')
+    )
+
+    if len(merged) == 0:
+        logger.warning("  No matching months between forecast and actuals for backtest")
+        return pd.DataFrame()
+
+    # Build the output: one row per Segment x Cohort x Month x Metric
+    rows = []
+    for _, row in merged.iterrows():
+        for metric in metrics:
+            fcst_col = f'{metric}_Forecast' if f'{metric}_Forecast' in row.index else metric
+            act_col = f'{metric}_Actual' if f'{metric}_Actual' in row.index else metric
+
+            fcst_val = row.get(fcst_col, 0)
+            act_val = row.get(act_col, 0)
+
+            # Handle provision sign convention (actuals may be negative)
+            if metric in ('Total_Provision_Balance', 'Provision_Balance'):
+                act_val = abs(act_val)
+
+            variance = fcst_val - act_val
+            pct_var = (variance / abs(act_val) * 100) if act_val != 0 else 0
+
+            rows.append({
+                'Segment': row['Segment'],
+                'Cohort': row['Cohort'],
+                'Month': row['Month'],
+                'Metric': metric,
+                'Forecast': round(fcst_val, 2),
+                'Actual': round(act_val, 2),
+                'Variance': round(variance, 2),
+                'Pct_Variance': round(pct_var, 2),
+            })
+
+    result = pd.DataFrame(rows)
+    result = result.sort_values(['Segment', 'Cohort', 'Month', 'Metric']).reset_index(drop=True)
+
+    n_months = result['Month'].nunique()
+    n_cohorts = result[['Segment', 'Cohort']].drop_duplicates().shape[0]
+    logger.info(f"  Backtest comparison: {n_cohorts} cohorts x {n_months} months x {len(metrics)} metrics = {len(result)} rows")
+
+    return result
+
+
 def export_to_excel(summary: pd.DataFrame, details: pd.DataFrame,
                     impairment: pd.DataFrame, reconciliation: pd.DataFrame,
                     validation: pd.DataFrame, output_dir: str) -> None:
@@ -3396,7 +3545,8 @@ def generate_comprehensive_transparency_report(
 
 def run_backbook_forecast(fact_raw_path: str, methodology_path: str,
                           debt_sale_path: Optional[str], output_dir: str,
-                          max_months: int, transparency_report: bool = False) -> pd.DataFrame:
+                          max_months: int, transparency_report: bool = False,
+                          cutoff_date: Optional[str] = None) -> pd.DataFrame:
     """
     Orchestrate entire forecast process.
 
@@ -3407,6 +3557,9 @@ def run_backbook_forecast(fact_raw_path: str, methodology_path: str,
         output_dir: Output directory
         max_months: Forecast horizon
         transparency_report: If True, generate single comprehensive output file
+        cutoff_date: Optional forecast cutoff in YYYY-MM format (e.g., '2025-10').
+                     Data before this month is used for curves/seeds; this month
+                     becomes the first forecast month. Enables backtest comparison.
 
     Returns:
         pd.DataFrame: Complete forecast
@@ -3423,6 +3576,37 @@ def run_backbook_forecast(fact_raw_path: str, methodology_path: str,
         fact_raw = load_fact_raw(fact_raw_path)
         methodology = load_rate_methodology(methodology_path)
         debt_sale_schedule = load_debt_sale_schedule(debt_sale_path)
+
+        # 1a. Apply cutoff date filtering if specified
+        fact_raw_full = None  # Will hold unfiltered data for backtest comparison
+        if cutoff_date:
+            cutoff_dt = end_of_month(pd.Timestamp(cutoff_date + '-01'))
+            cutoff_yyyymm = int(cutoff_date.replace('-', ''))
+            logger.info(f"Cutoff date specified: {cutoff_date}")
+            logger.info(f"  First forecast month: {cutoff_dt}")
+            logger.info(f"  Last actuals month: {end_of_month(cutoff_dt - relativedelta(months=1))}")
+            logger.info(f"  Excluding cohorts with origination >= {cutoff_yyyymm}")
+
+            # Store full data for backtest comparison later
+            fact_raw_full = fact_raw.copy()
+
+            rows_before = len(fact_raw)
+            cohorts_before = fact_raw['Cohort'].nunique()
+
+            # Filter to data before the cutoff month (last actuals = cutoff - 1 month)
+            fact_raw = fact_raw[fact_raw['CalendarMonth'] < cutoff_dt].copy()
+
+            # Exclude cohorts that wouldn't exist at the cutoff date
+            fact_raw = fact_raw[fact_raw['Cohort'].astype(int) < cutoff_yyyymm].copy()
+
+            rows_after = len(fact_raw)
+            cohorts_after = fact_raw['Cohort'].nunique()
+            logger.info(f"  Filtered: {rows_before} -> {rows_after} rows, "
+                        f"{cohorts_before} -> {cohorts_after} cohorts")
+
+            if rows_after == 0:
+                raise ValueError(f"No data remaining after cutoff filter ({cutoff_date}). "
+                                 "Check that the cutoff date is within the data range.")
 
         # 1b. Calculate seasonal factors from historical data
         if Config.ENABLE_SEASONALITY:
@@ -3507,6 +3691,19 @@ def run_backbook_forecast(fact_raw_path: str, methodology_path: str,
             # 9. Generate combined actuals + forecast for variance analysis
             logger.info("\n[Step 9/10] Generating combined actuals + forecast output...")
             combined = generate_combined_actuals_forecast(fact_raw, forecast, output_dir)
+
+        # 10. Generate backtest comparison if cutoff was specified
+        if cutoff_date and fact_raw_full is not None:
+            logger.info("\n[Step 10/10] Generating backtest comparison...")
+            backtest = generate_backtest_comparison(fact_raw_full, forecast, cutoff_date)
+            if len(backtest) > 0:
+                os.makedirs(output_dir, exist_ok=True)
+                backtest_path = os.path.join(output_dir, 'Backtest_Comparison.xlsx')
+                with pd.ExcelWriter(backtest_path, engine='openpyxl') as writer:
+                    backtest.to_excel(writer, sheet_name='Backtest_Detail', index=False)
+                logger.info(f"  Backtest comparison saved to: {backtest_path}")
+            else:
+                logger.warning("  No backtest data generated (no post-cutoff actuals found)")
 
         end_time = datetime.now()
         elapsed = (end_time - start_time).total_seconds()
@@ -3597,6 +3794,16 @@ Examples:
         help='Generate single comprehensive Forecast_Transparency_Report.xlsx with all outputs'
     )
 
+    parser.add_argument(
+        '--cutoff', '-c',
+        required=False,
+        default=None,
+        help='Forecast cutoff date in YYYY-MM format (e.g., 2025-10). '
+             'Data before this month is used for curves/seeds; this month becomes the first forecast month. '
+             'If omitted, uses all available data (default behaviour). '
+             'When set, auto-generates a Backtest_Comparison sheet comparing forecast vs post-cutoff actuals.'
+    )
+
     args = parser.parse_args()
 
     if args.verbose:
@@ -3608,7 +3815,8 @@ Examples:
         debt_sale_path=args.debt_sale,
         output_dir=args.output,
         max_months=args.months,
-        transparency_report=args.transparency_report
+        transparency_report=args.transparency_report,
+        cutoff_date=args.cutoff
     )
 
 
