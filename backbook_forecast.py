@@ -3096,9 +3096,11 @@ def generate_backtest_comparison(fact_raw_full: pd.DataFrame, forecast: pd.DataF
         logger.warning("  No post-cutoff actuals found for backtest comparison")
         return pd.DataFrame()
 
-    # Map actuals column names for consistency
+    # Map actuals column names for consistency with forecast column names
     if 'ClosingGBV_Reported' in actuals.columns and 'ClosingGBV' not in actuals.columns:
         actuals['ClosingGBV'] = actuals['ClosingGBV_Reported']
+    if 'Provision_Balance' in actuals.columns:
+        actuals['Total_Provision_Balance'] = actuals['Provision_Balance'].abs()
 
     # Aggregate actuals by Segment x Cohort x CalendarMonth
     actuals_agg = actuals.groupby(['Segment', 'Cohort', 'CalendarMonth']).agg({
@@ -3109,13 +3111,13 @@ def generate_backtest_comparison(fact_raw_full: pd.DataFrame, forecast: pd.DataF
         'ClosingGBV': 'sum',
         'WO_DebtSold': 'sum',
         'WO_Other': 'sum',
-        'Provision_Balance': 'sum',
+        'Total_Provision_Balance': 'sum',
     }).reset_index()
 
     # Compute actual coverage ratio
     actuals_agg['Total_Coverage_Ratio'] = np.where(
         actuals_agg['ClosingGBV'] > 0,
-        actuals_agg['Provision_Balance'].abs() / actuals_agg['ClosingGBV'],
+        actuals_agg['Total_Provision_Balance'] / actuals_agg['ClosingGBV'],
         0
     )
 
@@ -3182,9 +3184,7 @@ def generate_backtest_comparison(fact_raw_full: pd.DataFrame, forecast: pd.DataF
             fcst_val = row.get(fcst_col, 0)
             act_val = row.get(act_col, 0)
 
-            # Handle provision sign convention (actuals may be negative)
-            if metric in ('Total_Provision_Balance', 'Provision_Balance'):
-                act_val = abs(act_val)
+            # Provision sign already normalised to positive at source
 
             variance = fcst_val - act_val
             pct_var = (variance / abs(act_val) * 100) if act_val != 0 else 0
@@ -3279,7 +3279,8 @@ def generate_comprehensive_transparency_report(
     reconciliation: pd.DataFrame,
     validation: pd.DataFrame,
     output_dir: str,
-    max_months: int
+    max_months: int,
+    backtest: Optional[pd.DataFrame] = None
 ) -> str:
     """
     Generate single comprehensive Excel report with full audit trail and all outputs.
@@ -3302,6 +3303,7 @@ def generate_comprehensive_transparency_report(
         validation: Validation output
         output_dir: Output directory
         max_months: Forecast horizon
+        backtest: Optional backtest comparison DataFrame
 
     Returns:
         str: Path to generated report
@@ -3444,8 +3446,7 @@ def generate_comprehensive_transparency_report(
     # ==========================================================================
     with pd.ExcelWriter(output_path, engine='openpyxl') as writer:
         # README sheet
-        readme_data = {
-            'Sheet Name': [
+        sheet_names = [
                 '1_Actuals_Data',
                 '2_Historical_Rates',
                 '3_Extended_Curves',
@@ -3459,8 +3460,8 @@ def generate_comprehensive_transparency_report(
                 '11_Impairment',
                 '12_Reconciliation',
                 '13_Validation'
-            ],
-            'Description': [
+        ]
+        descriptions = [
                 'Raw historical data with calculated rates for each month',
                 'Aggregated rate curves by Segment x Cohort x MOB (historical only)',
                 'Rate curves extended for forecast period (Historical + Extended)',
@@ -3474,8 +3475,8 @@ def generate_comprehensive_transparency_report(
                 'Impairment and provision analysis',
                 'GBV reconciliation checks',
                 'Validation rules and pass/fail status'
-            ],
-            'Use For': [
+        ]
+        use_for = [
                 'Pivot tables showing historical trends, validating raw data',
                 'Understanding historical rate patterns by cohort age (MOB)',
                 'Seeing how rates are projected forward',
@@ -3489,7 +3490,15 @@ def generate_comprehensive_transparency_report(
                 'Provision and coverage ratio analysis',
                 'Verifying GBV movements reconcile correctly',
                 'Quality assurance and data validation'
-            ]
+        ]
+        if backtest is not None and len(backtest) > 0:
+            sheet_names.append('14_Backtest_Comparison')
+            descriptions.append('Forecast vs actuals comparison by Segment x Cohort x Month (backtest)')
+            use_for.append('Analysing forecast accuracy against post-cutoff actuals for BB cohorts')
+        readme_data = {
+            'Sheet Name': sheet_names,
+            'Description': descriptions,
+            'Use For': use_for
         }
         readme_df = pd.DataFrame(readme_data)
         readme_df.to_excel(writer, sheet_name='README', index=False)
@@ -3513,6 +3522,9 @@ def generate_comprehensive_transparency_report(
         reconciliation.to_excel(writer, sheet_name='12_Reconciliation', index=False)
         validation.to_excel(writer, sheet_name='13_Validation', index=False)
 
+        if backtest is not None and len(backtest) > 0:
+            backtest.to_excel(writer, sheet_name='14_Backtest_Comparison', index=False)
+
     logger.info(f"Comprehensive report saved to: {output_path}")
 
     print("\n" + "=" * 70)
@@ -3535,6 +3547,9 @@ def generate_comprehensive_transparency_report(
     print("    - 11_Impairment: Impairment analysis")
     print("    - 12_Reconciliation: GBV reconciliation")
     print("    - 13_Validation: Validation checks")
+    if backtest is not None and len(backtest) > 0:
+        print("  BACKTEST:")
+        print("    - 14_Backtest_Comparison: Forecast vs actuals by Segment x Cohort x Month")
 
     return output_path
 
@@ -3663,11 +3678,20 @@ def run_backbook_forecast(fact_raw_path: str, methodology_path: str,
         impairment_output = generate_impairment_output(forecast)
         reconciliation, validation = generate_validation_output(forecast)
 
-        # 8. Export to Excel
-        logger.info("\n[Step 8/10] Exporting to Excel...")
+        # 8. Generate backtest comparison if cutoff was specified
+        backtest = None
+        if cutoff_date and fact_raw_full is not None:
+            logger.info("\n[Step 8/10] Generating backtest comparison...")
+            backtest = generate_backtest_comparison(fact_raw_full, forecast, cutoff_date)
+            if len(backtest) == 0:
+                logger.warning("  No backtest data generated (no post-cutoff actuals found)")
+                backtest = None
+
+        # 9. Export to Excel
+        logger.info("\n[Step 9/10] Exporting to Excel...")
 
         if transparency_report:
-            # Generate single comprehensive transparency report
+            # Generate single comprehensive transparency report (includes backtest if available)
             generate_comprehensive_transparency_report(
                 fact_raw=fact_raw,
                 methodology=methodology,
@@ -3682,28 +3706,24 @@ def run_backbook_forecast(fact_raw_path: str, methodology_path: str,
                 reconciliation=reconciliation,
                 validation=validation,
                 output_dir=output_dir,
-                max_months=max_months
+                max_months=max_months,
+                backtest=backtest
             )
         else:
             # Generate separate output files
             export_to_excel(summary, details, impairment_output, reconciliation, validation, output_dir)
 
-            # 9. Generate combined actuals + forecast for variance analysis
-            logger.info("\n[Step 9/10] Generating combined actuals + forecast output...")
+            # Generate combined actuals + forecast for variance analysis
+            logger.info("\n[Step 9b/10] Generating combined actuals + forecast output...")
             combined = generate_combined_actuals_forecast(fact_raw, forecast, output_dir)
 
-        # 10. Generate backtest comparison if cutoff was specified
-        if cutoff_date and fact_raw_full is not None:
-            logger.info("\n[Step 10/10] Generating backtest comparison...")
-            backtest = generate_backtest_comparison(fact_raw_full, forecast, cutoff_date)
-            if len(backtest) > 0:
+            # Write standalone backtest file if available
+            if backtest is not None:
                 os.makedirs(output_dir, exist_ok=True)
                 backtest_path = os.path.join(output_dir, 'Backtest_Comparison.xlsx')
                 with pd.ExcelWriter(backtest_path, engine='openpyxl') as writer:
                     backtest.to_excel(writer, sheet_name='Backtest_Detail', index=False)
                 logger.info(f"  Backtest comparison saved to: {backtest_path}")
-            else:
-                logger.warning("  No backtest data generated (no post-cutoff actuals found)")
 
         end_time = datetime.now()
         elapsed = (end_time - start_time).total_seconds()
