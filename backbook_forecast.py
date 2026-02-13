@@ -3059,24 +3059,167 @@ def generate_combined_actuals_forecast(fact_raw: pd.DataFrame, forecast: pd.Data
     return combined
 
 
+def build_ex_contra_actuals(fact_raw_full: pd.DataFrame, cutoff_date: str,
+                            forecast_cohorts: pd.DataFrame) -> pd.DataFrame:
+    """
+    Build an ex-contra actuals series with month-by-month GBV roll-forward
+    that mirrors the forecast bridge (excluding contra settlements).
+
+    For each (Segment, Cohort), creates a time-ordered monthly series where:
+    - OpeningGBV_ExContra[t0] = OpeningGBV_Reported[t0]
+    - ClosingGBV_ExContra[t] = OpeningGBV_ExContra[t] + InterestRevenue
+      + Coll_Principal + Coll_Interest - WO_DebtSold - WO_Other
+    - OpeningGBV_ExContra[t+1] = ClosingGBV_ExContra[t]
+
+    Then derives ex-contra provision and NBV using the actual coverage ratio.
+
+    Args:
+        fact_raw_full: Full historical data (unfiltered)
+        cutoff_date: Cutoff date string in YYYY-MM format
+        forecast_cohorts: DataFrame with Segment x Cohort combinations to include
+
+    Returns:
+        pd.DataFrame: Ex-contra actuals at Segment x Cohort x Month level
+    """
+    logger.info("Building ex-contra actuals series...")
+
+    cutoff_dt = end_of_month(pd.Timestamp(cutoff_date + '-01'))
+    cutoff_yyyymm = int(cutoff_date.replace('-', ''))
+
+    # Filter to post-cutoff, BB cohorts, matching forecast cohorts
+    actuals = fact_raw_full[fact_raw_full['CalendarMonth'] >= cutoff_dt].copy()
+    actuals = actuals[actuals['Cohort'].astype(int) < cutoff_yyyymm].copy()
+    actuals = actuals.merge(forecast_cohorts, on=['Segment', 'Cohort'], how='inner')
+
+    if len(actuals) == 0:
+        logger.warning("  No post-cutoff actuals for ex-contra series")
+        return pd.DataFrame()
+
+    # Map column names
+    if 'ClosingGBV_Reported' in actuals.columns and 'ClosingGBV' not in actuals.columns:
+        actuals['ClosingGBV'] = actuals['ClosingGBV_Reported']
+    if 'Provision_Balance' in actuals.columns:
+        actuals['Total_Provision_Balance'] = actuals['Provision_Balance'].abs()
+
+    # Aggregate to Segment x Cohort x CalendarMonth level
+    agg_cols = {
+        'OpeningGBV': 'sum',
+        'Coll_Principal': 'sum',
+        'Coll_Interest': 'sum',
+        'InterestRevenue': 'sum',
+        'ClosingGBV': 'sum',
+        'WO_DebtSold': 'sum',
+        'WO_Other': 'sum',
+        'Total_Provision_Balance': 'sum',
+    }
+    if 'ContraSettlements_Principal' in actuals.columns:
+        agg_cols['ContraSettlements_Principal'] = 'sum'
+    if 'ContraSettlements_Interest' in actuals.columns:
+        agg_cols['ContraSettlements_Interest'] = 'sum'
+
+    actuals_agg = actuals.groupby(['Segment', 'Cohort', 'CalendarMonth']).agg(agg_cols).reset_index()
+    actuals_agg = actuals_agg.sort_values(['Segment', 'Cohort', 'CalendarMonth']).reset_index(drop=True)
+
+    # Build ex-contra roll-forward per cohort
+    rows = []
+    for (segment, cohort), group in actuals_agg.groupby(['Segment', 'Cohort']):
+        group = group.sort_values('CalendarMonth').reset_index(drop=True)
+        opening_ex_contra = None
+
+        for i, row in group.iterrows():
+            if opening_ex_contra is None:
+                # First month: use reported opening GBV
+                opening_ex_contra = row['OpeningGBV']
+
+            # Ex-contra closing: same bridge as forecast (no contra settlements)
+            closing_ex_contra = (
+                opening_ex_contra +
+                row['InterestRevenue'] +
+                row['Coll_Principal'] +    # negative (inflow), so adding = subtracting
+                row['Coll_Interest'] -     # negative (inflow), so adding = subtracting
+                row['WO_DebtSold'] -
+                row['WO_Other']
+            )
+            closing_ex_contra = max(0.0, closing_ex_contra)
+
+            # Actual coverage ratio from reported values
+            cr_actual = (row['Total_Provision_Balance'] / row['ClosingGBV']
+                         if row['ClosingGBV'] > 0 else 0)
+
+            # Ex-contra provision = actual CR x ex-contra GBV
+            provision_ex_contra = cr_actual * closing_ex_contra
+
+            # Ex-contra NBV
+            nbv_ex_contra = closing_ex_contra - provision_ex_contra
+
+            # Contra effect (sanity check): reported - ex-contra
+            contra_effect = row['ClosingGBV'] - closing_ex_contra
+
+            contra_principal = row.get('ContraSettlements_Principal', 0)
+            contra_interest = row.get('ContraSettlements_Interest', 0)
+
+            rows.append({
+                'Segment': segment,
+                'Cohort': cohort,
+                'Month': row['CalendarMonth'],
+                # Reported actuals
+                'OpeningGBV_Reported': row['OpeningGBV'],
+                'ClosingGBV_Reported': row['ClosingGBV'],
+                'Total_Provision_Balance_Reported': row['Total_Provision_Balance'],
+                # Movements (from actuals)
+                'Coll_Principal': row['Coll_Principal'],
+                'Coll_Interest': row['Coll_Interest'],
+                'InterestRevenue': row['InterestRevenue'],
+                'WO_DebtSold': row['WO_DebtSold'],
+                'WO_Other': row['WO_Other'],
+                'ContraSettlements_Principal': contra_principal,
+                'ContraSettlements_Interest': contra_interest,
+                # Ex-contra series
+                'OpeningGBV_ExContra': round(opening_ex_contra, 2),
+                'ClosingGBV_ExContra': round(closing_ex_contra, 2),
+                'Total_Coverage_Ratio_Actual': round(cr_actual, 6),
+                'Total_Provision_Balance_ExContra': round(provision_ex_contra, 2),
+                'ClosingNBV_ExContra': round(nbv_ex_contra, 2),
+                # Sanity check
+                'Contra_Effect_on_GBV': round(contra_effect, 2),
+            })
+
+            # Next month's opening = this month's ex-contra closing
+            opening_ex_contra = closing_ex_contra
+
+    result = pd.DataFrame(rows)
+
+    n_cohorts = result[['Segment', 'Cohort']].drop_duplicates().shape[0]
+    n_months = result['Month'].nunique()
+    logger.info(f"  Built ex-contra actuals: {n_cohorts} cohorts x {n_months} months = {len(result)} rows")
+
+    return result
+
+
 def generate_backtest_comparison(fact_raw_full: pd.DataFrame, forecast: pd.DataFrame,
-                                  cutoff_date: str) -> pd.DataFrame:
+                                  cutoff_date: str, use_ex_contra: bool = False) -> pd.DataFrame:
     """
     Generate a Segment x Cohort x Month backtest comparison of forecast vs actuals.
 
     Compares forecast output against post-cutoff actuals for the exact cohorts
-    present in the forecast (BB cohorts only), providing a true like-for-like
-    backtest comparison.
+    present in the forecast (BB cohorts only).
+
+    When use_ex_contra=True, stock metrics (OpeningGBV, ClosingGBV,
+    Total_Provision_Balance) use the ex-contra actuals series for a like-for-like
+    comparison with the forecast bridge (which excludes contra settlements).
+    Flow metrics (collections, interest, write-offs) remain as reported.
 
     Args:
         fact_raw_full: Full historical data (unfiltered, includes post-cutoff actuals)
         forecast: Forecast output from the model
         cutoff_date: Cutoff date string in YYYY-MM format
+        use_ex_contra: If True, use ex-contra actuals for stock metrics
 
     Returns:
         pd.DataFrame: Backtest comparison with Forecast, Actual, Variance per metric
     """
-    logger.info("Generating backtest comparison...")
+    mode_label = "ex-contra" if use_ex_contra else "reported"
+    logger.info(f"Generating backtest comparison (actuals mode: {mode_label})...")
 
     cutoff_dt = end_of_month(pd.Timestamp(cutoff_date + '-01'))
     cutoff_yyyymm = int(cutoff_date.replace('-', ''))
@@ -3127,6 +3270,37 @@ def generate_backtest_comparison(fact_raw_full: pd.DataFrame, forecast: pd.DataF
         actuals_agg['WO_Other']
     )
 
+    # If using ex-contra mode, build the roll-forward series and overlay stock metrics
+    if use_ex_contra:
+        ex_contra = build_ex_contra_actuals(fact_raw_full, cutoff_date, forecast_cohorts)
+        if len(ex_contra) > 0:
+            # Merge ex-contra stock metrics into actuals_agg
+            ec_lookup = ex_contra[['Segment', 'Cohort', 'Month',
+                                    'OpeningGBV_ExContra', 'ClosingGBV_ExContra',
+                                    'Total_Provision_Balance_ExContra',
+                                    'ClosingNBV_ExContra']].copy()
+            ec_lookup.rename(columns={'Month': 'CalendarMonth'}, inplace=True)
+            actuals_agg = actuals_agg.merge(ec_lookup, on=['Segment', 'Cohort', 'CalendarMonth'], how='left')
+
+            # Override stock metrics with ex-contra values
+            actuals_agg['OpeningGBV'] = actuals_agg['OpeningGBV_ExContra'].fillna(actuals_agg['OpeningGBV'])
+            actuals_agg['ClosingGBV'] = actuals_agg['ClosingGBV_ExContra'].fillna(actuals_agg['ClosingGBV'])
+            actuals_agg['Total_Provision_Balance'] = actuals_agg['Total_Provision_Balance_ExContra'].fillna(
+                actuals_agg['Total_Provision_Balance'])
+            # Recompute coverage ratio on ex-contra basis
+            actuals_agg['Total_Coverage_Ratio'] = np.where(
+                actuals_agg['ClosingGBV'] > 0,
+                actuals_agg['Total_Provision_Balance'] / actuals_agg['ClosingGBV'],
+                0
+            )
+            # Recompute ClosingGBV_exclcontra (same as ClosingGBV in ex-contra mode)
+            actuals_agg['ClosingGBV_exclcontra'] = actuals_agg['ClosingGBV']
+
+            # Clean up temp columns
+            actuals_agg.drop(columns=['OpeningGBV_ExContra', 'ClosingGBV_ExContra',
+                                       'Total_Provision_Balance_ExContra', 'ClosingNBV_ExContra'],
+                              inplace=True, errors='ignore')
+
     actuals_agg.rename(columns={'CalendarMonth': 'Month'}, inplace=True)
 
     # Aggregate forecast by Segment x Cohort x ForecastMonth
@@ -3139,7 +3313,6 @@ def generate_backtest_comparison(fact_raw_full: pd.DataFrame, forecast: pd.DataF
         'WO_DebtSold': 'sum',
         'WO_Other': 'sum',
     }
-    # Add provision columns if they exist
     if 'Total_Provision_Balance' in forecast.columns:
         forecast_agg_cols['Total_Provision_Balance'] = 'sum'
 
@@ -3195,8 +3368,6 @@ def generate_backtest_comparison(fact_raw_full: pd.DataFrame, forecast: pd.DataF
             fcst_val = row.get(fcst_col, 0)
             act_val = row.get(act_col, 0)
 
-            # Provision sign already normalised to positive at source
-
             variance = fcst_val - act_val
             pct_var = (variance / abs(act_val) * 100) if act_val != 0 else 0
 
@@ -3209,6 +3380,7 @@ def generate_backtest_comparison(fact_raw_full: pd.DataFrame, forecast: pd.DataF
                 'Actual': round(act_val, 2),
                 'Variance': round(variance, 2),
                 'Pct_Variance': round(pct_var, 2),
+                'Actuals_Basis': mode_label,
             })
 
     result = pd.DataFrame(rows)
@@ -3216,7 +3388,7 @@ def generate_backtest_comparison(fact_raw_full: pd.DataFrame, forecast: pd.DataF
 
     n_months = result['Month'].nunique()
     n_cohorts = result[['Segment', 'Cohort']].drop_duplicates().shape[0]
-    logger.info(f"  Backtest comparison: {n_cohorts} cohorts x {n_months} months x {len(metrics)} metrics = {len(result)} rows")
+    logger.info(f"  Backtest comparison ({mode_label}): {n_cohorts} cohorts x {n_months} months x {len(metrics)} metrics = {len(result)} rows")
 
     return result
 
@@ -3291,7 +3463,8 @@ def generate_comprehensive_transparency_report(
     validation: pd.DataFrame,
     output_dir: str,
     max_months: int,
-    backtest: Optional[pd.DataFrame] = None
+    backtest: Optional[pd.DataFrame] = None,
+    ex_contra_actuals: Optional[pd.DataFrame] = None
 ) -> str:
     """
     Generate single comprehensive Excel report with full audit trail and all outputs.
@@ -3315,6 +3488,7 @@ def generate_comprehensive_transparency_report(
         output_dir: Output directory
         max_months: Forecast horizon
         backtest: Optional backtest comparison DataFrame
+        ex_contra_actuals: Optional ex-contra actuals series DataFrame
 
     Returns:
         str: Path to generated report
@@ -3518,6 +3692,10 @@ def generate_comprehensive_transparency_report(
             sheet_names.append('14_Backtest_Comparison')
             descriptions.append('Forecast vs actuals comparison by Segment x Cohort x Month (backtest)')
             use_for.append('Analysing forecast accuracy against post-cutoff actuals for BB cohorts')
+        if ex_contra_actuals is not None and len(ex_contra_actuals) > 0:
+            sheet_names.append('15_ExContra_Actuals')
+            descriptions.append('Ex-contra actuals roll-forward: GBV series excluding contra settlements, with derived provision and NBV')
+            use_for.append('Like-for-like comparison basis vs forecast (which also excludes contra). Includes contra effect sanity check.')
         readme_data = {
             'Sheet Name': sheet_names,
             'Description': descriptions,
@@ -3548,6 +3726,9 @@ def generate_comprehensive_transparency_report(
         if backtest is not None and len(backtest) > 0:
             backtest.to_excel(writer, sheet_name='14_Backtest_Comparison', index=False)
 
+        if ex_contra_actuals is not None and len(ex_contra_actuals) > 0:
+            ex_contra_actuals.to_excel(writer, sheet_name='15_ExContra_Actuals', index=False)
+
     logger.info(f"Comprehensive report saved to: {output_path}")
 
     print("\n" + "=" * 70)
@@ -3573,6 +3754,8 @@ def generate_comprehensive_transparency_report(
     if backtest is not None and len(backtest) > 0:
         print("  BACKTEST:")
         print("    - 14_Backtest_Comparison: Forecast vs actuals by Segment x Cohort x Month")
+    if ex_contra_actuals is not None and len(ex_contra_actuals) > 0:
+        print("    - 15_ExContra_Actuals: Ex-contra actuals roll-forward (GBV, provision, NBV)")
 
     return output_path
 
@@ -3584,7 +3767,8 @@ def generate_comprehensive_transparency_report(
 def run_backbook_forecast(fact_raw_path: str, methodology_path: str,
                           debt_sale_path: Optional[str], output_dir: str,
                           max_months: int, transparency_report: bool = False,
-                          cutoff_date: Optional[str] = None) -> pd.DataFrame:
+                          cutoff_date: Optional[str] = None,
+                          use_ex_contra: bool = False) -> pd.DataFrame:
     """
     Orchestrate entire forecast process.
 
@@ -3598,6 +3782,7 @@ def run_backbook_forecast(fact_raw_path: str, methodology_path: str,
         cutoff_date: Optional forecast cutoff in YYYY-MM format (e.g., '2025-10').
                      Data before this month is used for curves/seeds; this month
                      becomes the first forecast month. Enables backtest comparison.
+        use_ex_contra: If True, use ex-contra actuals for backtest stock metrics.
 
     Returns:
         pd.DataFrame: Complete forecast
@@ -3701,11 +3886,23 @@ def run_backbook_forecast(fact_raw_path: str, methodology_path: str,
         impairment_output = generate_impairment_output(forecast)
         reconciliation, validation = generate_validation_output(forecast)
 
-        # 8. Generate backtest comparison if cutoff was specified
+        # 8. Generate backtest comparison and ex-contra actuals if cutoff was specified
         backtest = None
+        ex_contra_actuals = None
         if cutoff_date and fact_raw_full is not None:
-            logger.info("\n[Step 8/10] Generating backtest comparison...")
-            backtest = generate_backtest_comparison(fact_raw_full, forecast, cutoff_date)
+            forecast_cohorts = forecast[['Segment', 'Cohort']].drop_duplicates()
+
+            # Build ex-contra actuals series (always, for the detail sheet)
+            logger.info("\n[Step 8a/10] Building ex-contra actuals series...")
+            ex_contra_actuals = build_ex_contra_actuals(fact_raw_full, cutoff_date, forecast_cohorts)
+            if len(ex_contra_actuals) == 0:
+                ex_contra_actuals = None
+
+            # Generate backtest comparison
+            logger.info("\n[Step 8b/10] Generating backtest comparison...")
+            backtest = generate_backtest_comparison(
+                fact_raw_full, forecast, cutoff_date, use_ex_contra=use_ex_contra
+            )
             if len(backtest) == 0:
                 logger.warning("  No backtest data generated (no post-cutoff actuals found)")
                 backtest = None
@@ -3730,7 +3927,8 @@ def run_backbook_forecast(fact_raw_path: str, methodology_path: str,
                 validation=validation,
                 output_dir=output_dir,
                 max_months=max_months,
-                backtest=backtest
+                backtest=backtest,
+                ex_contra_actuals=ex_contra_actuals
             )
         else:
             # Generate separate output files
@@ -3741,11 +3939,14 @@ def run_backbook_forecast(fact_raw_path: str, methodology_path: str,
             combined = generate_combined_actuals_forecast(fact_raw, forecast, output_dir)
 
             # Write standalone backtest file if available
-            if backtest is not None:
+            if backtest is not None or ex_contra_actuals is not None:
                 os.makedirs(output_dir, exist_ok=True)
                 backtest_path = os.path.join(output_dir, 'Backtest_Comparison.xlsx')
                 with pd.ExcelWriter(backtest_path, engine='openpyxl') as writer:
-                    backtest.to_excel(writer, sheet_name='Backtest_Detail', index=False)
+                    if backtest is not None:
+                        backtest.to_excel(writer, sheet_name='Backtest_Detail', index=False)
+                    if ex_contra_actuals is not None:
+                        ex_contra_actuals.to_excel(writer, sheet_name='ExContra_Actuals', index=False)
                 logger.info(f"  Backtest comparison saved to: {backtest_path}")
 
         end_time = datetime.now()
@@ -3847,6 +4048,15 @@ Examples:
              'When set, auto-generates a Backtest_Comparison sheet comparing forecast vs post-cutoff actuals.'
     )
 
+    parser.add_argument(
+        '--ex-contra',
+        action='store_true',
+        help='Use ex-contra actuals for backtest comparison. '
+             'Builds a month-by-month GBV roll-forward that excludes contra settlements '
+             '(matching the forecast bridge), so stock metrics (GBV, provision, NBV) '
+             'are compared on a like-for-like basis. Requires --cutoff.'
+    )
+
     args = parser.parse_args()
 
     if args.verbose:
@@ -3859,7 +4069,8 @@ Examples:
         output_dir=args.output,
         max_months=args.months,
         transparency_report=args.transparency_report,
-        cutoff_date=args.cutoff
+        cutoff_date=args.cutoff,
+        use_ex_contra=args.ex_contra
     )
 
 
