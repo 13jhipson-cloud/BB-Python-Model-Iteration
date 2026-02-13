@@ -1232,25 +1232,25 @@ def calculate_impairment_actuals(fact_raw: pd.DataFrame) -> pd.DataFrame:
     impairment['Prior_Provision_Balance'] = impairment.groupby(['Segment', 'Cohort'])['Total_Provision_Balance'].shift(1).fillna(0)
     impairment['Total_Provision_Movement'] = impairment['Total_Provision_Balance'] - impairment['Prior_Provision_Balance']
 
-    # Apply sign convention (matching reporting):
-    # - Write-offs (Debt_Sale_WriteOffs, WO_Other): NEGATIVE (expense/loss)
+    # Apply sign convention:
+    # - Write-offs (Debt_Sale_WriteOffs, WO_Other): POSITIVE (absolute amounts)
     # - DS_Provision_Release: POSITIVE (income/benefit)
     # - DS_Proceeds: POSITIVE (income/benefit)
-    impairment['Debt_Sale_WriteOffs'] = -impairment['Debt_Sale_WriteOffs'].abs()  # NEGATIVE
-    impairment['WO_Other'] = -impairment['WO_Other'].abs()  # NEGATIVE
+    impairment['Debt_Sale_WriteOffs'] = impairment['Debt_Sale_WriteOffs'].abs()  # POSITIVE
+    impairment['WO_Other'] = impairment['WO_Other'].abs()  # POSITIVE
     impairment['Debt_Sale_Provision_Release'] = impairment['Debt_Sale_Provision_Release'].abs()  # POSITIVE
     impairment['Debt_Sale_Proceeds'] = impairment['Debt_Sale_Proceeds'].abs()  # POSITIVE
 
     # Calculate impairment components
     # Non_DS = Total + DS_Release (add back the release to isolate non-DS movement)
     impairment['Non_DS_Provision_Movement'] = impairment['Total_Provision_Movement'] + impairment['Debt_Sale_Provision_Release']
-    # Gross impairment = NEGATED provision movement + WO_Other
+    # Gross impairment = NEGATED provision movement - WO_Other
     # P&L convention: provision increase = charge (negative), provision decrease = release (positive)
-    # WO_Other is already negative (expense)
-    impairment['Gross_Impairment_ExcludingDS'] = -impairment['Non_DS_Provision_Movement'] + impairment['WO_Other']
-    # Debt_Sale_Impact: WriteOffs (negative) + Release (positive) + Proceeds (positive)
+    # WO_Other is stored as positive, subtract to represent expense
+    impairment['Gross_Impairment_ExcludingDS'] = -impairment['Non_DS_Provision_Movement'] - impairment['WO_Other']
+    # Debt_Sale_Impact: -WriteOffs (expense) + Release (positive) + Proceeds (positive)
     impairment['Debt_Sale_Impact'] = (
-        impairment['Debt_Sale_WriteOffs'] +
+        -impairment['Debt_Sale_WriteOffs'] +
         impairment['Debt_Sale_Provision_Release'] +
         impairment['Debt_Sale_Proceeds']
     )
@@ -2392,8 +2392,8 @@ def run_one_step(seed_table: pd.DataFrame, rate_lookup: pd.DataFrame,
         # 7. Debt sale impact = DS WriteOffs + DS provision release + DS proceeds
         # 8. Net impairment = Gross impairment (excl DS) + Debt sale impact
         #
-        # SIGN CONVENTION (matching P&L reporting):
-        # - Write-offs (WO_DebtSold, WO_Other): NEGATIVE (expense/loss)
+        # SIGN CONVENTION:
+        # - Write-offs (WO_DebtSold, WO_Other): POSITIVE (absolute amounts)
         # - Provision increase: NEGATIVE (charge to P&L)
         # - Provision decrease: POSITIVE (release/benefit to P&L)
         # - DS_Provision_Release: POSITIVE (income/benefit)
@@ -2423,24 +2423,23 @@ def run_one_step(seed_table: pd.DataFrame, rate_lookup: pd.DataFrame,
         # Stored as POSITIVE (benefit - cash received)
         ds_proceeds = ds_proceeds_rate * debt_sale_wo_raw
 
-        # Apply sign convention for stored values:
-        # Write-offs are NEGATIVE (expense), release/proceeds are POSITIVE (benefit)
-        wo_debt_sold_stored = -wo_debt_sold  # NEGATIVE
-        wo_other_stored = -wo_other  # NEGATIVE
+        # Store write-offs as POSITIVE (absolute amounts)
+        wo_debt_sold_stored = wo_debt_sold
+        wo_other_stored = wo_other
 
         # Step 5: Calculate Non-DS provision movement
         # Non_DS = Total + DS_Release (add back the release to isolate non-DS movement)
         non_ds_provision_movement = total_provision_movement + ds_provision_release
 
         # Step 6: Calculate Gross impairment (excluding debt sales)
-        # = NEGATED provision movement + WO_Other
+        # = NEGATED provision movement - WO_Other
         # P&L convention: provision increase = charge (negative), provision decrease = release (positive)
-        # WO_Other is already negative (expense)
-        gross_impairment_excl_ds = -non_ds_provision_movement + wo_other_stored
+        # WO_Other is stored as positive, so subtract to represent expense
+        gross_impairment_excl_ds = -non_ds_provision_movement - wo_other_stored
 
         # Step 7: Calculate Debt sale impact (gain/loss from debt sale)
-        # = WriteOffs (negative) + Release (positive) + Proceeds (positive)
-        debt_sale_impact = wo_debt_sold_stored + ds_provision_release + ds_proceeds
+        # = -WriteOffs (expense) + Release (positive) + Proceeds (positive)
+        debt_sale_impact = -wo_debt_sold_stored + ds_provision_release + ds_proceeds
 
         # Step 8: Calculate Net impairment
         net_impairment = gross_impairment_excl_ds + debt_sale_impact
@@ -2479,8 +2478,8 @@ def run_one_step(seed_table: pd.DataFrame, rate_lookup: pd.DataFrame,
             'Coll_Principal': round(coll_principal, 2),
             'Coll_Interest': round(coll_interest, 2),
             'InterestRevenue': round(interest_revenue, 2),
-            'WO_DebtSold': round(wo_debt_sold_stored, 2),  # NEGATIVE (expense)
-            'WO_Other': round(wo_other_stored, 2),  # NEGATIVE (expense)
+            'WO_DebtSold': round(wo_debt_sold_stored, 2),  # POSITIVE (absolute amount)
+            'WO_Other': round(wo_other_stored, 2),  # POSITIVE (absolute amount)
             'ContraSettlements_Principal': round(contra_principal, 2),
             'ContraSettlements_Interest': round(contra_interest, 2),
 
@@ -2509,7 +2508,7 @@ def run_one_step(seed_table: pd.DataFrame, rate_lookup: pd.DataFrame,
 
             # Debt Sale - only occurs in debt sale months (Mar, Jun, Sep, Dec)
             'Is_Debt_Sale_Month': is_debt_sale_month(forecast_month),
-            'Debt_Sale_WriteOffs': round(wo_debt_sold_stored, 2),  # NEGATIVE (expense)
+            'Debt_Sale_WriteOffs': round(wo_debt_sold_stored, 2),  # POSITIVE (absolute amount)
             'Debt_Sale_Coverage_Ratio': round(ds_coverage_ratio, 6),
             'Debt_Sale_Proceeds_Rate': round(ds_proceeds_rate, 6),
             'Debt_Sale_Provision_Release': round(ds_provision_release, 2),
@@ -2821,15 +2820,14 @@ def generate_validation_output(forecast: pd.DataFrame) -> Tuple[pd.DataFrame, pd
     recon = forecast.copy()
 
     # GBV reconciliation
-    # Note: WO_DebtSold and WO_Other are stored as NEGATIVE (expense convention)
-    # So we ADD them (adding negative = subtracting positive)
+    # WO_DebtSold and WO_Other are stored as POSITIVE (absolute amounts)
     recon['ClosingGBV_Calculated'] = (
         recon['OpeningGBV'] +
         recon['InterestRevenue'] -
         abs(recon['Coll_Principal']) -
-        abs(recon['Coll_Interest']) +
-        recon['WO_DebtSold'] +  # Negative stored value, so add
-        recon['WO_Other']  # Negative stored value, so add
+        abs(recon['Coll_Interest']) -
+        recon['WO_DebtSold'] -
+        recon['WO_Other']
     ).round(2)
 
     recon['GBV_Variance'] = (recon['ClosingGBV_Calculated'] - recon['ClosingGBV']).abs().round(2)
@@ -3114,11 +3112,19 @@ def generate_backtest_comparison(fact_raw_full: pd.DataFrame, forecast: pd.DataF
         'Total_Provision_Balance': 'sum',
     }).reset_index()
 
-    # Compute actual coverage ratio
+    # Compute actual coverage ratio and ClosingGBV_exclcontra
     actuals_agg['Total_Coverage_Ratio'] = np.where(
         actuals_agg['ClosingGBV'] > 0,
         actuals_agg['Total_Provision_Balance'] / actuals_agg['ClosingGBV'],
         0
+    )
+    actuals_agg['ClosingGBV_exclcontra'] = (
+        actuals_agg['OpeningGBV'] +
+        actuals_agg['InterestRevenue'] +
+        actuals_agg['Coll_Principal'] +
+        actuals_agg['Coll_Interest'] -
+        actuals_agg['WO_DebtSold'] -
+        actuals_agg['WO_Other']
     )
 
     actuals_agg.rename(columns={'CalendarMonth': 'Month'}, inplace=True)
@@ -3136,27 +3142,32 @@ def generate_backtest_comparison(fact_raw_full: pd.DataFrame, forecast: pd.DataF
     # Add provision columns if they exist
     if 'Total_Provision_Balance' in forecast.columns:
         forecast_agg_cols['Total_Provision_Balance'] = 'sum'
-    if 'Total_Coverage_Ratio' in forecast.columns:
-        # Coverage ratio: weighted by ClosingGBV (will recompute after aggregation)
-        pass
 
     fcst_agg = forecast.groupby(['Segment', 'Cohort', 'ForecastMonth']).agg(
         forecast_agg_cols
     ).reset_index()
 
-    # Compute forecast coverage ratio from aggregated values
+    # Compute forecast coverage ratio and ClosingGBV_exclcontra from aggregated values
     if 'Total_Provision_Balance' in fcst_agg.columns:
         fcst_agg['Total_Coverage_Ratio'] = np.where(
             fcst_agg['ClosingGBV'] > 0,
             fcst_agg['Total_Provision_Balance'] / fcst_agg['ClosingGBV'],
             0
         )
+    fcst_agg['ClosingGBV_exclcontra'] = (
+        fcst_agg['OpeningGBV'] +
+        fcst_agg['InterestRevenue'] -
+        abs(fcst_agg['Coll_Principal']) -
+        abs(fcst_agg['Coll_Interest']) -
+        fcst_agg['WO_DebtSold'] -
+        fcst_agg['WO_Other']
+    )
 
     fcst_agg.rename(columns={'ForecastMonth': 'Month'}, inplace=True)
 
     # Merge forecast and actuals
     metrics = ['OpeningGBV', 'Coll_Principal', 'Coll_Interest', 'InterestRevenue',
-               'ClosingGBV', 'WO_DebtSold', 'WO_Other']
+               'ClosingGBV', 'ClosingGBV_exclcontra', 'WO_DebtSold', 'WO_Other']
     if 'Total_Provision_Balance' in fcst_agg.columns:
         metrics.append('Total_Provision_Balance')
     if 'Total_Coverage_Ratio' in fcst_agg.columns:
@@ -3332,10 +3343,22 @@ def generate_comprehensive_transparency_report(
     actuals_df['GBV_Runoff_Rate'] = actuals_df.apply(
         lambda r: safe_divide(r['OpeningGBV'] - r['ClosingGBV_Reported'], r['OpeningGBV']), axis=1)
 
+    # ClosingGBV excluding contra settlements
+    actuals_df['ClosingGBV_exclcontra'] = (
+        actuals_df['OpeningGBV'] +
+        actuals_df['InterestRevenue'] +
+        actuals_df['Coll_Principal'] +
+        actuals_df['Coll_Interest'] -
+        actuals_df['WO_DebtSold'] -
+        actuals_df['WO_Other']
+    )
+
     actuals_cols = [
         'CalendarMonth', 'Segment', 'Cohort', 'MOB',
         'OpeningGBV', 'Coll_Principal', 'Coll_Interest', 'InterestRevenue',
-        'WO_DebtSold', 'WO_Other', 'ClosingGBV_Reported', 'Provision_Balance',
+        'WO_DebtSold', 'WO_Other',
+        'ContraSettlements_Principal', 'ContraSettlements_Interest',
+        'ClosingGBV_Reported', 'ClosingGBV_exclcontra', 'Provision_Balance',
         'Coll_Principal_Rate', 'Coll_Interest_Rate', 'InterestRevenue_Rate_Annual',
         'WO_DebtSold_Rate', 'WO_Other_Rate', 'Coverage_Ratio', 'GBV_Runoff_Rate'
     ]
